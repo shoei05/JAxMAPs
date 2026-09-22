@@ -24,6 +24,10 @@ const GROUP_COLOR = {
 const groupOf = {};
 Object.entries(D.display_groups).forEach(([g, v]) => v.domains.forEach(d => (groupOf[d] = g)));
 const colorOf = d => GROUP_COLOR[groupOf[d]] || "#8a8a90";
+/* 聖路加のバリデーション表から起こした検証済み尺度。領域ごとに引けるようにする。 */
+const SCALES_BY_DOMAIN = {};
+(D.scales || []).forEach(s => { if (s.domain) (SCALES_BY_DOMAIN[s.domain] = SCALES_BY_DOMAIN[s.domain] || []).push(s); });
+const hasScale = d => !!SCALES_BY_DOMAIN[d];
 
 const state = { tab: "map", q: "", groups: new Set(), minPapers: 1, verified: false,
                 sel: null, selEdge: null, listSel: null };
@@ -128,6 +132,11 @@ function draw() {
     ctx.fillStyle = colorOf(n.id); ctx.fill();
     ctx.lineWidth = n.id === state.sel ? 2.5 : 1;
     ctx.strokeStyle = n.id === state.sel ? "#14171c" : "#e9e7df"; ctx.stroke();
+    if (hasScale(n.id)) {           // 検証済み尺度で測られている概念
+      ctx.beginPath(); ctx.arc(n.x, n.y, rad(n) + 3.2, 0, Math.PI * 2);
+      ctx.lineWidth = 1.2; ctx.strokeStyle = "#14171c"; ctx.globalAlpha = dim ? 0.12 : 0.55; ctx.stroke();
+      ctx.globalAlpha = dim ? 0.15 : 1;
+    }
   });
   const top = [...sim.nodes].sort((a, b) => b.n - a.n);
   ctx.globalAlpha = 1;
@@ -210,6 +219,21 @@ function renderDetail() {
     d.append(el("h3", null, label(state.sel)));
     d.append(el("p", "muted small", D.domains[state.sel] || ""));
     d.append(el("p", null, `この概念に触れる関連の問い: ${nd ? nd.n : 0} 論文`));
+    const sc = SCALES_BY_DOMAIN[state.sel] || [];
+    if (sc.length) {
+      d.append(el("h4", "sub-h", "この概念を測る検証済み尺度"));
+      d.append(el("p", "muted small", "出典: " + D.scales_source));
+      sc.forEach(s => {
+        const c = el("div", "mini");
+        c.append(el("div", "t", s.scale + (s.aliases && s.aliases.length ? `（別表記: ${s.aliases.join("、")}）` : "")));
+        c.append(el("div", "m", `グレード ${s.grades.join("/")}／${s.n_items}項目／調査波 ${s.years.join("・")}`));
+        if (s.domain_note) c.append(el("div", "m warnnote", s.domain_note));
+        c.append(el("div", "m", "対応づけ: " + s.domain_basis));
+        (s.references_ja.concat(s.references_en)).slice(0, 2).forEach(r => c.append(el("div", "m ref", r)));
+        d.append(c);
+      });
+      d.append(el("h4", "sub-h", "この概念が現れる関連"));
+    }
     const es = sim.edges.filter(e => e.s === state.sel || e.t === state.sel).sort((a, b) => b.n - a.n);
     es.forEach(e => {
       const c = el("div", "mini");
@@ -295,6 +319,13 @@ function renderData() {
   const t2 = el("div", "kvs");
   Object.entries(D.pairs_excluded).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => kv(t2, k, v + " 論文"));
   box.append(t2);
+  sec("検証済み尺度");
+  box.append(el("p", "muted small", "出典: " + D.scales_source));
+  box.append(el("p", "small", "グレードA = " + D.scales_grade_definition.A + "／グレードB = " + D.scales_grade_definition.B));
+  const st = el("div", "kvs");
+  (D.scales || []).forEach(s => kv(st, s.scale.slice(0, 30),
+    `${s.grades.join("/")}｜${s.n_items}項目｜${s.domain ? (D.domain_labels[s.domain] || s.domain) : "該当する領域なし"}`));
+  box.append(st);
   sec("空白の読み方");
   box.append(el("p", "small", D.meta.empty_cell_label));
   sec("生成元");
