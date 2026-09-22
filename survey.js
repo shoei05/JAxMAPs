@@ -253,15 +253,18 @@
   }
   function paperUrl(p) {
     const doi = String(p.doi || '').trim().replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, '');
-    return /^10\.\d{4,9}\/\S+$/.test(doi) ? 'https://doi.org/' + encodeURIComponent(doi).replace(/%2F/gi, '/') : '';
+    if (/^10\.\d{4,9}\/\S+$/.test(doi)) return 'https://doi.org/' + encodeURIComponent(doi).replace(/%2F/gi, '/');
+    return /^https?:\/\//i.test(p.article_url || '') ? p.article_url : '';
   }
   function papersMarkup(q) {
     const domains = new Set(arr(q.domains));
-    const papers = arr(window.JAXMAPS && window.JAXMAPS.papers).filter(p => domains.has(p.exposure_domain) || domains.has(p.outcome_domain)).sort((a, b) => Number(b.year) - Number(a.year));
+    const papers = arr(window.JAXMAPS && window.JAXMAPS.papers).filter(p => p.doc_kind !== 'supplement' && p.doc_kind !== 'admin' &&
+      (Array.isArray(p.map_domains) ? p.map_domains : [p.exposure_domain, p.outcome_domain]).some(d => domains.has(d))).sort((a, b) => Number(b.year) - Number(a.year));
     if (!papers.length) return '';
     const paperRows = list => list.map(p => {
       const url = paperUrl(p), title = esc(p.title || 'タイトル未登録');
-      return `<article class="sv-related-paper">${url ? `<a class="sv-related-title" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${title}</a>` : `<div class="sv-related-title">${title}</div>`}<p>${esc([p.first_author, p.year, p.journal].filter(Boolean).join(' · '))}</p><span>${esc([domainLabel(p.exposure_domain), domainLabel(p.outcome_domain)].filter(Boolean).join(' → '))}</span></article>`;
+      const topics = Array.isArray(p.map_domains) ? p.map_domains : [p.exposure_domain, p.outcome_domain];
+      return `<article class="sv-related-paper">${url ? `<a class="sv-related-title" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${title}</a>` : `<div class="sv-related-title">${title}</div>`}<p>${esc([p.first_author_full || p.first_author, p.year, p.journal].filter(Boolean).join(' · '))}</p><span>${esc(topics.map(domainLabel).filter(Boolean).join(' / '))}</span></article>`;
     }).join('');
     return `<section class="sv-detail-section"><h3>同じ概念を扱う論文 <span>${num(papers.length)} 本</span></h3>${paperRows(papers.slice(0, 10))}${papers.length > 10 ? `<details class="sv-related-more"><summary>残り ${num(papers.length - 10)} 本を表示</summary>${paperRows(papers.slice(10))}</details>` : ''}</section>`;
   }

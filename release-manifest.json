@@ -18,20 +18,20 @@
     "rights_restricted_question_count": 34,
     "rights_note": "再配布許諾を確認できないため、質問本文は掲載せず公式調査票を案内しています。"
   },
-  "papers": 301,
+  "papers": 300,
   "files": {
-    "index.html": "3da88b8e5d91e3422bf49ca52ac1457ca77a7ed2a47eb8172a26f1e020127d2b",
-    "app.js": "45c4453fe99ee30519c7936b8bfb0ebf4dc5068d36a19a1aaeb32128d418498f",
-    "style.css": "5039df70687813bae8d84f522ff77612fa3a4d75cb8e09243aa57664944715e1",
-    "survey.js": "8e80661466cbc6060a91134d8eadc31ce269a3e92536d7099591931a4c89ef3f",
+    "index.html": "71928f3a327cb7d52ffab5d8260fff62cad60a24bc6d61d73a23516ff10d1173",
+    "app.js": "cc6f45780668fd84c3a62ef5bc43a01150bdeb465c8e52868b48ea9a5c412688",
+    "style.css": "3d703b34c507380fab07483c4d4fb37b9987394b6aacf7387da01a8e779f4bcb",
+    "survey.js": "c9e8b91619ac7c75efe5b71a213d262f922395ae7008aba393472cb0be464d67",
     "survey.css": "a71a102a3ea268a615bd13804fd16c4a31b275b0b429482dd61b8b73283a3468",
     "data/survey.json": "2b92799d843eb8524cc6199c3c5bdfd06abf67941b307addc2655f98834904ca",
     "data/survey-data.js": "fe58b1388a75464f8f0bed04ce66f8086359e2bba07094b985022f4007874a6e",
     "data/questionnaire-texts.json": "6cd85298142a65a877147c85a8b4b99c720bacb0129275b40ef7c4f66897c573",
     "data/questionnaire-texts.js": "194ccf15dcad664beecc9288750b96c4f2cdb695c3ad255c0d9de3044f5666c8",
-    "data/jaxmaps.json": "20f36a183bc634287d9758a7619c7737a1182eeb955e920678518d8ef8960703",
+    "data/jaxmaps.json": "447872f0a5aa21def7c56d585104787ea38dda6b71eaa12b9333747090322934",
     "data/scales.json": "37551c1d67fd0df63b841528ae0639dfad30e4ff154521bf640736d7b3e5a486",
-    "data/survey_crosswalk.json": "d356a8519b3801f44a9bcdcb672ff243f401c861d262ca02011c1835a5c3209e",
+    "data/survey_crosswalk.json": "9da9e79c5dc4eb52f22e8f4d7e605d8a38e3579cdba720436044f871e12d5b7c",
     "data/schema.json": "649cce052aee7f70363d413135a57205cf3cab68faf921028ba56c403a66901b",
     "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5"
   }
