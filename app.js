@@ -65,7 +65,7 @@ function paperSearchText(p) {
   return searchText([p.title,p.first_author,p.first_author_full,...(p.authors||[]),...(p.author_aliases||[]),
     p.journal,p.journal_abbreviation,...(p.journal_aliases||[]),p.doi,
     ...(p.search_aliases||[]),...(p.documents||[]),label(p.exposure_domain),
-    label(p.outcome_domain),...paperDomains(p).flatMap(d => [d,label(d),D.domains[d]]),...(p.tags||[]).map(label)].join(" "));
+    label(p.outcome_domain),...paperDomains(p).flatMap(d => [d,label(d)]),...(p.tags||[]).map(label)].join(" "));
 }
 function paperQueryMatches(p, query) {
   const tokens = searchText(query).split(/\s+/).filter(Boolean), hay = paperSearchText(p);
@@ -444,15 +444,15 @@ function renderData() {
   (D.scales || []).forEach(s => kv(st, s.scale.slice(0, 30),
     `${s.years.join("・")}年｜${s.domain ? (D.domain_labels[s.domain] || s.domain) : "その他"}`));
   box.append(st);
-  sec("調査票にあり、この索引で主分類の登録がない内容");
+  sec("主分類として登録された論文がない調査票の内容");
   box.append(el("p", "muted small", D.survey_crosswalk_note));
   const un = (D.survey_crosswalk || []).filter(r => r.n_papers_as_main === 0)
     .sort((a, b) => b.n_survey_items - a.n_survey_items);
   const ut = el("div", "kvs");
   un.forEach(r => kv(ut, `${r.n_survey_items}項目`, `[${r.main_category}] ${r.subcategory}`));
   box.append(ut);
-  sec("2020／2021の調査票に対応分類が無い領域");
-  box.append(el("p", "muted small", "この表は JACSIS 2020・2021 しか扱っていない。対応が無いことは、後年の調査や JASTIS で追加された項目であることを意味する場合が多い。下の件数は、この索引に登録された主曝露・主アウトカムの論文数です。"));
+  sec("JACSIS 2020・2021の調査票に対応する分類がない領域");
+  box.append(el("p", "muted small", "この表はJACSIS 2020・2021の調査票だけを対象にしています。対応する分類がない領域は、2022年以降の調査やJASTISで追加された項目であることが多いです。下の件数は、この索引に登録された主曝露・主アウトカムの論文数です。"));
   const dt = el("div", "kvs");
   (D.domains_not_in_2020_2021_survey || []).forEach(x => kv(dt, x.label, `主問いにした論文 ${x.n_papers_as_main} 本`));
   box.append(dt);
@@ -566,7 +566,7 @@ function exportMapSVG() {
   if(!sim.nodes.length)return;
   const minX=Math.min(...sim.nodes.map(n=>n.x))-140,maxX=Math.max(...sim.nodes.map(n=>n.x))+140;
   const minY=Math.min(...sim.nodes.map(n=>n.y))-100,maxY=Math.max(...sim.nodes.map(n=>n.y))+100;
-  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY-60} ${maxX-minX} ${maxY-minY+100}" width="1800" role="img"><title>JAxMAPs 概念の関連マップ</title><rect x="${minX}" y="${minY-60}" width="${maxX-minX}" height="${maxY-minY+100}" fill="#f8f7f4"/><g font-family="sans-serif">`;
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY-60} ${maxX-minX} ${maxY-minY+100}" width="1800" role="img"><title>JAxMAPs 概念マップ</title><rect x="${minX}" y="${minY-60}" width="${maxX-minX}" height="${maxY-minY+100}" fill="#f8f7f4"/><g font-family="sans-serif">`;
   svg+=`<text x="${minX+20}" y="${minY-25}" font-size="22" font-weight="700">JAxMAPs | JACSIS / JASTIS</text>`;
   sim.edges.forEach(e=>{const attr=`fill="none" stroke="${colorOf(e.s)}" stroke-opacity=".35" stroke-width="${Math.min(7,.7+Math.log2(e.n+1)*1.5)}"`;svg+=e.s===e.t?`<circle cx="${e.a.x+14}" cy="${e.a.y-14}" r="13" ${attr}/>`:`<line x1="${e.a.x}" y1="${e.a.y}" x2="${e.b.x}" y2="${e.b.y}" ${attr}/>`;});
   sim.nodes.forEach(n=>{svg+=`<circle cx="${n.x}" cy="${n.y}" r="${rad(n)}" fill="${colorOf(n.id)}"/><text x="${n.x}" y="${n.y-rad(n)-9}" text-anchor="middle" font-size="13" paint-order="stroke" stroke="#f8f7f4" stroke-width="4" stroke-linejoin="round" fill="#14171c">${esc(label(n.id))} (${n.n})</text>`;});
