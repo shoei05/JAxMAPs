@@ -178,8 +178,10 @@
 #survey-root .sv-item-origin > summary, #survey-root .sv-text-variant > summary { cursor: pointer; }
 #survey-root .sv-item-origin p, #survey-root .sv-text-variant p { white-space: pre-wrap; color: #6d828d; margin: 7px 0; }
 #survey-root .sv-related-paper { padding: 12px 0; border-bottom: 1px solid #e1e9e7; }
-#survey-root .sv-related-paper > button { border: 0; padding: 0; background: none; text-align: left; color: #386582; font-size: 12px; line-height: 1.7; font-weight: 600; }
-#survey-root .sv-related-paper > button:hover { text-decoration: underline; text-underline-offset: 3px; }
+#survey-root .sv-related-title { padding: 0; text-align: left; color: #386582; font-size: 12px; line-height: 1.7; font-weight: 600; }
+#survey-root a.sv-related-title { text-decoration: none; }
+#survey-root div.sv-related-title { color: #415966; }
+#survey-root a.sv-related-title:hover { text-decoration: underline; text-underline-offset: 3px; }
 #survey-root .sv-related-paper > p { margin: 4px 0; font-size: 10px; color: #8c969b; }
 #survey-root .sv-related-paper > span { font-size: 10px; color: #7d8e99; }
 #survey-root .sv-related-more { margin-top: 15px; }
