@@ -27,9 +27,12 @@ function paperTitle(p,className="t") {
 
 /* 生成りの紙面で沈まないよう、彩度を落として明度差をつけたテーマ色。 */
 const GROUP_COLOR = {
-  dependence_preference: "#f21a00", digital_information: "#78b7c5", mental_psychological: "#c5487b",
-  relations_social: "#e8a0bd", infection_prevention: "#23707f", healthcare_use: "#3b9ab2",
-  lifestyle_physical: "#e1af00", family_sex: "#f07f3c", work_socioeconomic: "#8a7a86", research_methods: "#a3adb3",
+  dependence_preference: "#F21A00", digital_information: "#78B7C5", mental_psychological: "#3B9AB2",  // Zissou1
+  relations_social: "#E6A0C4", healthcare_use: "#7294D4",   // GrandBudapest2
+  infection_prevention: "#046C9A",                          // Darjeeling2
+  lifestyle_physical: "#81A88D", work_socioeconomic: "#972D15",  // Cavalcanti1
+  family_sex: "#E1AF00",                                    // Zissou1
+  research_methods: "#CDC08C"                               // Moonrise3,
 };
 const groupOf = {};
 Object.entries(D.display_groups).forEach(([g, v]) => v.domains.forEach(d => (groupOf[d] = g)));
@@ -228,10 +231,10 @@ function draw() {
     ctx.beginPath(); ctx.arc(n.x, n.y, rad(n), 0, Math.PI * 2);
     ctx.fillStyle = colorOf(n.id); ctx.fill();
     ctx.lineWidth = n.id === state.sel ? 2.5 : 1;
-    ctx.strokeStyle = n.id === state.sel ? "#2f3437" : "#ffffff"; ctx.stroke();
+    ctx.strokeStyle = n.id === state.sel ? cssVar("--canvas-ink", "#2f3437") : cssVar("--canvas-node-edge", "#ffffff"); ctx.stroke();
     if (hasScale(n.id)) {           // 検証済み尺度で測られている概念
       ctx.beginPath(); ctx.arc(n.x, n.y, rad(n) + 3.2, 0, Math.PI * 2);
-      ctx.lineWidth = 1.2; ctx.strokeStyle = "#2f3437"; ctx.globalAlpha = dim ? 0.12 : 0.55; ctx.stroke();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = cssVar("--canvas-ink", "#2f3437"); ctx.globalAlpha = dim ? 0.12 : 0.55; ctx.stroke();
       ctx.globalAlpha = dim ? 0.15 : 1;
     }
   });
@@ -255,9 +258,9 @@ function draw() {
     ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.font = `${fs}px -apple-system,"Hiragino Sans",sans-serif`;
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(255,255,255,.9)";
+    ctx.fillStyle = cssVar("--canvas-label-bg", "rgba(255,255,255,.9)");
     ctx.fillRect(box.x1, box.y1, box.x2 - box.x1, box.y2 - box.y1);
-    ctx.fillStyle = "#2f3437"; ctx.fillText(txt, sx, sy);
+    ctx.fillStyle = cssVar("--canvas-ink", "#2f3437"); ctx.fillText(txt, sx, sy);
     ctx.restore();
   });
   ctx.restore();
@@ -302,7 +305,9 @@ function appendPaperCards(container, papers) {
     card.append(paperTitle(p), el("div", "m", [p.first_author_full || p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
     const info = el("button", "paper-details", "調査情報を見る");
     info.onclick = () => {state.listSel = p.paper_id; state.sel = state.selEdge = null; renderDetail();};
-    card.append(info); container.append(card);
+    card.append(info);
+    if (p.links?.length) { const ln = el("button", "paper-details", "つながりを見る"); ln.onclick = () => openLinks(p.paper_id); card.append(ln); }
+    container.append(card);
   });
 }
 function renderUnmappedPapers(g) {
@@ -347,11 +352,11 @@ function renderDetail() {
     }
     const sv = SURVEY_BY_DOMAIN[state.sel] || [];
     if (sv.length) {
-      d.append(el("h4", "sub-h", "調査票での位置づけ（JACSIS 2020／2021）"));
+      d.append(el("h4", "sub-h", "調査票での位置づけ"));
       sv.sort((x, y) => y.n_survey_items - x.n_survey_items).slice(0, 6).forEach(r => {
         const c = el("div", "mini");
         c.append(el("div", "t", r.subcategory));
-        c.append(el("div", "m", `${r.main_category}／${r.n_survey_items}項目`));
+        c.append(el("div", "m", `${r.main_category}／${r.n_survey_items}${r.count_unit || "項目"}`));
         d.append(c);
       });
       d.append(el("p", "muted small", D.survey_coverage_note));
@@ -386,7 +391,9 @@ function renderDetail() {
   kv("調査", p.study);
   kv("調査年", (p.waves_verified?.length?p.waves_verified:p.waves_yes).map(y=>y+"年").join("、") || "未確認");
   kv("効果推定値の報告", p.has_effect_estimate);
+  if (p.cited_by_count != null) kv("被引用数（OpenAlex）", p.cited_by_count);
   d.append(box);
+  if (p.links?.length && !(state.tab === "links" && lsim.seed === p.paper_id)) { const lb = el("button", "survey-jump", "この論文を起点につながりを見る →"); lb.onclick = () => openLinks(p.paper_id); d.append(lb); }
   const wb=el("button","survey-jump","関連する調査年の質問を探す →");
   wb.onclick=()=>{const waves=p.waves_verified?.length?p.waves_verified:p.waves_yes;const year=String(waves?.[0]||"").match(/20\d{2}/)?.[0];openSurvey({year:year||"",study:["JACSIS","JASTIS"].includes(p.study?.toUpperCase())?p.study.toUpperCase():""});};d.append(wb);
   d.append(el("p", "muted small", "結果（推定値・信頼区間）は第一版では未収載です。数値は自動生成せず、原著で確認してください。"));
@@ -420,6 +427,7 @@ function renderList() {
     const info=el("button","paper-details","調査情報を見る");
     info.onclick = () => { state.listSel = p.paper_id; state.sel = null; state.selEdge = null; refresh(); };
     c.append(info);
+    if (p.links?.length) { const ln = el("button", "paper-details", "つながりを見る"); ln.onclick = () => openLinks(p.paper_id); c.append(ln); }
     box.append(c);
   });
 }
@@ -449,13 +457,22 @@ function renderData() {
   const un = (D.survey_crosswalk || []).filter(r => r.n_papers_as_main === 0)
     .sort((a, b) => b.n_survey_items - a.n_survey_items);
   const ut = el("div", "kvs");
-  un.forEach(r => kv(ut, `${r.n_survey_items}項目`, `[${r.main_category}] ${r.subcategory}`));
+  un.forEach(r => kv(ut, `${r.n_survey_items}${r.count_unit || "項目"}`, `[${r.main_category}] ${r.subcategory}`));
   box.append(ut);
-  sec("JACSIS 2020・2021の調査票に対応する分類がない領域");
-  box.append(el("p", "muted small", "この表はJACSIS 2020・2021の調査票だけを対象にしています。対応する分類がない領域は、2022年以降の調査やJASTISで追加された項目であることが多いです。下の件数は、この索引に登録された主曝露・主アウトカムの論文数です。"));
+  const extraRows = (D.survey_crosswalk || []).filter(r => r.main_category === "JAxMAPs追加分類").sort((a, b) => b.n_survey_items - a.n_survey_items);
+  if (extraRows.length) {
+    sec("JAxMAPs追加分類（全年度の調査票）");
+    box.append(el("p", "muted small", "聖路加の分類表はJACSIS 2020・2021の設問だけを分類しています。JACSIS・JASTISの全年度の設問を、全テーマについてキーワードで候補に絞り、Jevで判定して分類を上乗せしました（人手による確認前）。件数は該当した設問数（全年度・全票の合計）と、この索引で主曝露・主アウトカムにした論文数です。"));
+    const xt = el("div", "kvs");
+    extraRows.forEach(r => kv(xt, r.domain_label || r.subcategory, `${r.n_survey_items}${r.count_unit || "項目"} · 主問いにした論文 ${r.n_papers_as_main} 本`));
+    box.append(xt);
+  }
+  const missing = D.domains_not_in_2020_2021_survey || [];
+  sec(`調査票に対応する分類がない領域 ${missing.length}件`);
+  if (!missing.length) box.append(el("p", "muted small", "すべての領域に、対応する調査票の分類があります。"));
   const dt = el("div", "kvs");
-  (D.domains_not_in_2020_2021_survey || []).forEach(x => kv(dt, x.label, `主問いにした論文 ${x.n_papers_as_main} 本`));
-  box.append(dt);
+  missing.forEach(x => kv(dt, x.label, `主問いにした論文 ${x.n_papers_as_main} 本`));
+  if (missing.length) box.append(dt);
   sec("空白の読み方");
   box.append(el("p", "small", D.meta.empty_cell_label));
 }
@@ -468,12 +485,13 @@ function refresh(relayout) {
   const g = renderStats(); syncSelection(g); renderGroups(); renderSearchSummary(g);
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === state.tab));
   document.body.classList.toggle("survey-mode",state.tab==="survey");
-  document.querySelector(".control-console").hidden=state.tab==="survey";
-  ["map", "matrix", "survey", "list", "data"].forEach(t => $("#pane-" + t).style.display = state.tab === t ? "" : "none");
+  document.querySelector(".control-console").hidden=state.tab==="survey"||state.tab==="links";
+  ["map", "matrix", "survey", "list", "links", "data"].forEach(t => $("#pane-" + t).style.display = state.tab === t ? "" : "none");
   if (state.tab === "map") { if (relayout !== false) layout(g, true); renderUnmappedPapers(g); }
   if (state.tab === "list") renderList();
   if (state.tab === "data") renderData();
   if (state.tab === "matrix") renderMatrix();
+  if (state.tab === "links") { renderLinks(); if (!lsim.nodes.length && lsim.seed) buildLinkGraph(); }
   if (state.tab === "survey") window.JAxSurvey?.mount();
   renderDetail();
 }
@@ -486,7 +504,7 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#paper-wave").onchange=e=>{state.wave=e.target.value;refresh(true);};
   $("#export-svg").onclick=exportMapSVG;
   $("#export-papers").onclick=exportPapers;
-  const readViewHash=()=>{const [t,params=""]=location.hash.slice(1).split("?");if(["map","matrix","survey","list","data"].includes(t)){state.tab=t;const id=new URLSearchParams(params).get("domain");if(t==="map"&&id&&Object.hasOwn(D.domains,id)){state.sel=id;state.selEdge=null;}}};
+  const readViewHash=()=>{const [t,params=""]=location.hash.slice(1).split("?");if(["map","matrix","survey","list","links","data"].includes(t)){state.tab=t;const pid=new URLSearchParams(params).get("paper");if(t==="links"&&pid&&paperById[pid]){lsim.seed=pid;state.listSel=pid;lsim.nodes=[];}const id=new URLSearchParams(params).get("domain");if(t==="map"&&id&&Object.hasOwn(D.domains,id)){state.sel=id;state.selEdge=null;}}};
   window.addEventListener("hashchange",()=>{readViewHash();refresh(state.tab==="map");});
   readViewHash();
   $("#q").placeholder = "タイトル・著者名・誌名／略称・DOI・領域";
@@ -559,7 +577,7 @@ function renderMatrix() {
   const scroll=el("div","matrix-scroll");const table=el("table","relation-matrix");table.setAttribute("aria-label","登録された曝露とアウトカム別の論文数");
   const thead=el("thead");const hr=el("tr");const corner=el("th",null,"曝露 ↓ / アウトカム →");hr.append(corner);
   domains.forEach(d=>{const th=el("th");const btn=el("button","matrix-domain",`${label(d)}（${g.nodes.find(n=>n.id===d).n}論文）`);btn.onclick=()=>openDomain(d,true);th.append(btn);th.scope="col";th.style.borderTopColor=colorOf(d);hr.append(th);});thead.append(hr);table.append(thead);
-  const tbody=el("tbody");domains.forEach(a=>{const tr=el("tr");const th=el("th",null,label(a));th.scope="row";tr.append(th);domains.forEach(b=>{const td=el("td");const e=edges[a+"|"+b];if(e){const btn=el("button",null,String(e.n));btn.style.background=`rgba(35,112,127,${Math.min(.85,.16+Math.log2(e.n+1)*.13)})`;btn.style.color=e.n>3?"white":"#1f5f6e";btn.setAttribute("aria-label",`${label(a)}から${label(b)}、${e.n}論文`);btn.onclick=()=>{state.sel=null;state.selEdge=e;renderDetail();};td.append(btn);}else{td.textContent="·";td.title="解析の組合せが未確認、または線の最小論文数未満";}tr.append(td);});tbody.append(tr);});table.append(tbody);scroll.append(table);box.append(scroll);
+  const tbody=el("tbody");domains.forEach(a=>{const tr=el("tr");const th=el("th",null,label(a));th.scope="row";tr.append(th);domains.forEach(b=>{const td=el("td");const e=edges[a+"|"+b];if(e){const btn=el("button",null,String(e.n));btn.style.background=`rgba(59,154,178,${Math.min(.85,.16+Math.log2(e.n+1)*.13)})`;btn.style.color=e.n>3?"white":"#1f5f6e";btn.setAttribute("aria-label",`${label(a)}から${label(b)}、${e.n}論文`);btn.onclick=()=>{state.sel=null;state.selEdge=e;renderDetail();};td.append(btn);}else{td.textContent="·";td.title="解析の組合せが未確認、または線の最小論文数未満";}tr.append(td);});tbody.append(tr);});table.append(tbody);scroll.append(table);box.append(scroll);
 }
 function exportMapSVG() {
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
@@ -573,3 +591,187 @@ function exportMapSVG() {
   svg+=`<text x="${minX+20}" y="${maxY+10}" font-size="11">円はテーマの全論文、線は登録された解析の論文数。因果を意味しません。調査 ${esc(state.study||"すべて")} / 年 ${esc(state.wave||"すべて")}</text></g></svg>`;
   downloadFile("JAxMAPs-map.svg",svg,"image/svg+xml;charset=utf-8");
 }
+
+/* ---------- 論文のつながり（Connected Papers 型） ----------
+   近さは build 時に計算済み（scripts/paper_links.py）。参考文献の重なり（OpenAlex）と本文確認したテーマの重なりの目安であり、
+   影響関係や因果を意味しない。円の色は出版年、大きさは OpenAlex の被引用数。 */
+const _cssCache = {};
+function cssVar(name, fallback) {
+  const key = (document.documentElement.dataset.theme || "light") + name;
+  if (!(key in _cssCache)) _cssCache[key] = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return _cssCache[key] || fallback;
+}
+const lsim = { nodes: [], edges: [], byId: {}, tx: 0, ty: 0, k: 1, running: 0, seed: null, hover: null };
+let lcv, lctx;
+const linkPapers = D.papers.filter(p => p.doc_kind === "paper");
+const PAPER_YEARS = linkPapers.map(p => p.year).filter(Boolean);
+const Y_MIN = Math.min(...PAPER_YEARS), Y_MAX = Math.max(...PAPER_YEARS);
+const ZISSOU1_CONT = ["#3A9AB2","#6FB2C1","#91BAB6","#A5C2A3","#BDC881","#DCCB4E","#E3B710","#E79805","#EC7A05","#EF5703","#F11B00"];
+function yearColor(y) {  // wesanderson Zissou1Continuous。古い論文ほど青、新しい論文ほど赤
+  const t = y ? (y - Y_MIN) / Math.max(1, Y_MAX - Y_MIN) : 0, f = t * (ZISSOU1_CONT.length - 1), i = Math.min(ZISSOU1_CONT.length - 2, Math.floor(f)), u = f - i;
+  const hx = h => [1, 3, 5].map(k => parseInt(h.slice(k, k + 2), 16)), a = hx(ZISSOU1_CONT[i]), b = hx(ZISSOU1_CONT[i + 1]);
+  return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * u)).join(",")})`;
+}
+const shortRef = p => `${p.first_author || (p.first_author_full || "").split(" ").pop() || "?"} ${p.year || ""}`.trim();
+function linkReason(l) {
+  const [, , shared, themes, direct] = l, parts = [];
+  if (shared) parts.push(`共通の参考文献 ${shared}件`);
+  if (themes) parts.push(`共通テーマ ${themes}`);
+  if (direct) parts.push("直接引用あり");
+  return parts.join(" · ") || "収載論文からの共引用";
+}
+function openLinks(id) {
+  state.tab = "links"; lsim.seed = id; state.listSel = id; state.sel = state.selEdge = null;
+  history.replaceState(null, "", "#links?paper=" + encodeURIComponent(id));
+  buildLinkGraph(); refresh(false);
+}
+function buildLinkGraph() {
+  const seed = paperById[lsim.seed];
+  if (!seed) { lsim.nodes = []; lsim.edges = []; return; }
+  const seedIdx = D.papers.indexOf(seed);
+  const ids = [seedIdx, ...(seed.links || []).map(l => l[0])];
+  const set = new Set(ids);
+  const w = lcv?.clientWidth || 800, h = lcv?.clientHeight || 600;
+  lsim.nodes = ids.map((i, k) => {
+    const p = D.papers[i], ang = k * 2.399963, r = k ? 120 + 8 * k : 0;
+    return { i, id: p.paper_id, p, x: w / 2 + r * Math.cos(ang), y: h / 2 + r * Math.sin(ang), vx: 0, vy: 0, seed: k === 0 };
+  });
+  lsim.byId = Object.fromEntries(lsim.nodes.map(n => [n.i, n]));
+  const seen = new Set(); lsim.edges = [];
+  ids.forEach(i => (D.papers[i].links || []).forEach(l => {
+    if (!set.has(l[0])) return;
+    const key = i < l[0] ? i + "|" + l[0] : l[0] + "|" + i;
+    if (seen.has(key)) return; seen.add(key);
+    const isSeedEdge = i === seedIdx || l[0] === seedIdx;
+    if (!isSeedEdge && l[1] < 250) return;  // 周辺どうしは近さ25以上だけ結ぶ（線の絡まりを防ぐ）
+    lsim.edges.push({ a: lsim.byId[i], b: lsim.byId[l[0]], s: l[1] / 1000, seed: isSeedEdge });
+  }));
+  lsim.running = 320; lsim.k = 1; lsim.tx = 0; lsim.ty = 0;
+}
+function lstep() {
+  const N = lsim.nodes; if (!N.length) return;
+  const cx = (lcv.clientWidth || 800) / 2, cy = (lcv.clientHeight || 600) / 2;
+  for (let a = 0; a < N.length; a++) for (let b = a + 1; b < N.length; b++) {
+    const A = N[a], B = N[b]; let dx = B.x - A.x, dy = B.y - A.y, d2 = dx * dx + dy * dy + 0.01, d = Math.sqrt(d2);
+    const f = 2600 / d2; A.vx -= f * dx / d; A.vy -= f * dy / d; B.vx += f * dx / d; B.vy += f * dy / d;
+  }
+  lsim.edges.forEach(e => {
+    const len = 70 + 260 * (1 - Math.min(1, e.s / 0.7));
+    const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.hypot(dx, dy) || 1, f = (d - len) * 0.012 * (0.4 + e.s);
+    e.a.vx += f * dx / d; e.a.vy += f * dy / d; e.b.vx -= f * dx / d; e.b.vy -= f * dy / d;
+  });
+  N.forEach(n => {
+    if (n.seed) { n.x += (cx - n.x) * 0.2; n.y += (cy - n.y) * 0.2; n.vx = n.vy = 0; return; }
+    if (n.fixed) { n.vx = n.vy = 0; return; }
+    n.vx += (cx - n.x) * 0.002; n.vy += (cy - n.y) * 0.002;
+    n.vx *= 0.82; n.vy *= 0.82; n.x += Math.max(-12, Math.min(12, n.vx)); n.y += Math.max(-12, Math.min(12, n.vy));
+  });
+}
+const lrad = n => 6 + Math.sqrt(n.p.cited_by_count || 0) * 1.6 + (n.seed ? 4 : 0);
+const ltoWorld = (mx, my) => ({ x: (mx - lsim.tx) / lsim.k, y: (my - lsim.ty) / lsim.k });
+function lhit(mx, my) { const p = ltoWorld(mx, my); return [...lsim.nodes].reverse().find(n => Math.hypot(n.x - p.x, n.y - p.y) <= lrad(n) + 3); }
+function ldraw() {
+  if (!lcv) return;
+  const w = lcv.clientWidth, h = lcv.clientHeight;
+  if (lcv.width !== Math.round(w * dpr) || lcv.height !== Math.round(h * dpr)) { lcv.width = Math.round(w * dpr); lcv.height = Math.round(h * dpr); }
+  lctx.setTransform(dpr, 0, 0, dpr, 0, 0); lctx.clearRect(0, 0, w, h);
+  lctx.save(); lctx.translate(lsim.tx, lsim.ty); lctx.scale(lsim.k, lsim.k);
+  const sel = state.listSel, ink = cssVar("--canvas-ink", "#2f3437"), rose = cssVar("--accent-hl", "#f21a00");
+  lsim.edges.forEach(e => {
+    const on = sel && sel !== lsim.seed && (e.a.id === sel || e.b.id === sel);
+    lctx.beginPath(); lctx.moveTo(e.a.x, e.a.y); lctx.lineTo(e.b.x, e.b.y);
+    lctx.strokeStyle = on ? rose : cssVar("--canvas-edge", "#9aa7ad");
+    lctx.globalAlpha = on ? 0.8 : 0.12 + 0.5 * Math.min(1, e.s / 0.6); lctx.lineWidth = (0.6 + 3 * Math.min(1, e.s / 0.6)) / Math.sqrt(lsim.k);
+    lctx.stroke();
+  });
+  lctx.globalAlpha = 1;
+  lsim.nodes.forEach(n => {
+    lctx.beginPath(); lctx.arc(n.x, n.y, lrad(n), 0, Math.PI * 2);
+    lctx.fillStyle = yearColor(n.p.year); lctx.fill();
+    lctx.lineWidth = (n.seed || n.id === sel ? 3 : 1) / Math.sqrt(lsim.k);
+    lctx.strokeStyle = n.seed ? rose : n.id === sel ? ink : cssVar("--canvas-node-edge", "#ffffff"); lctx.stroke();
+  });
+  const fs = Math.max(10, Math.min(12.5, 11.5 / lsim.k));
+  lctx.font = `${fs}px ${cssVar("--font-base", "sans-serif")}`; lctx.textAlign = "center"; lctx.textBaseline = "top";
+  lsim.nodes.forEach(n => {
+    const txt = shortRef(n.p), tw = lctx.measureText(txt).width, y = n.y + lrad(n) + 3;
+    lctx.fillStyle = cssVar("--canvas-label-bg", "rgba(255,255,255,.9)"); lctx.fillRect(n.x - tw / 2 - 3, y - 1, tw + 6, fs + 3);
+    lctx.fillStyle = n.seed ? rose : ink; lctx.font = `${n.seed ? "700 " : ""}${fs}px ${cssVar("--font-base", "sans-serif")}`; lctx.fillText(txt, n.x, y);
+  });
+  lctx.restore();
+}
+function lfit() {
+  if (!lsim.nodes.length || !lcv) return;
+  const xs = lsim.nodes.map(n => n.x), ys = lsim.nodes.map(n => n.y), w = lcv.clientWidth, h = lcv.clientHeight;
+  const bw = Math.max(1, Math.max(...xs) - Math.min(...xs)) + 120, bh = Math.max(1, Math.max(...ys) - Math.min(...ys)) + 120;
+  lsim.k = Math.max(0.3, Math.min(1.6, Math.min(w / bw, h / bh)));
+  lsim.tx = w / 2 - lsim.k * (Math.min(...xs) + Math.max(...xs)) / 2; lsim.ty = h / 2 - lsim.k * (Math.min(...ys) + Math.max(...ys)) / 2;
+}
+function ltick() {
+  if (state.tab === "links") { if (lsim.running > 0) { lstep(); lsim.running--; if (lsim.running % 20 === 0) lfit(); } ldraw(); }
+  requestAnimationFrame(ltick);
+}
+function renderLinks() {
+  const legend = $("#links-legend"), list = $("#link-list"), seed = paperById[lsim.seed];
+  const meta = D.paper_links_meta || {};
+  legend.replaceChildren();
+  const yl = el("div", "legend-years");
+  yl.append(el("span", null, `${Y_MIN}`), Object.assign(el("span", "legend-ramp"), { style: `background:linear-gradient(90deg,${ZISSOU1_CONT.join(",")})` }), el("span", null, `${Y_MAX}年`));
+  legend.append(yl, el("p", null, "円の色は出版年、大きさは被引用数（OpenAlex）。線が太く近いほど、参考文献やテーマの重なりが大きい論文です。影響関係や因果は示しません。"));
+  list.replaceChildren();
+  if (!seed) {
+    list.append(el("p", "muted", "起点にする論文を上の欄で探すか、論文一覧の「つながりを見る」から開いてください。"));
+    const picks = [...linkPapers].filter(p => p.cited_by_count != null).sort((a, b) => (b.cited_by_count || 0) - (a.cited_by_count || 0)).slice(0, 12);
+    list.append(el("h4", "sub-h", "被引用数の多い論文から始める"));
+    picks.forEach(p => { const b = el("button", "link-row"); b.append(el("span", "lr-t", p.title), el("span", "lr-m", `${shortRef(p)} · 被引用 ${p.cited_by_count}`)); b.onclick = () => openLinks(p.paper_id); list.append(b); });
+    return;
+  }
+  const head = el("div", "link-seed-card");
+  head.append(el("span", "lr-k", "起点"), paperTitle(seed, "paper-title"), el("div", "m", [shortRef(seed), seed.journal, seed.cited_by_count != null ? `被引用 ${seed.cited_by_count}` : null].filter(Boolean).join(" · ")));
+  if (seed.link_basis === "themes") head.append(el("p", "muted small", "この論文は参考文献を取得できなかったため、テーマの重なりだけで近さを計算しています。"));
+  list.append(head, el("h4", "sub-h", `近い論文 ${(seed.links || []).length}本`));
+  (seed.links || []).forEach(l => {
+    const p = D.papers[l[0]], row = el("div", "link-row" + (state.listSel === p.paper_id ? " on" : ""));
+    const t = el("button", "lr-t", p.title); t.onclick = () => { state.listSel = p.paper_id; renderDetail(); renderLinks(); };
+    const re = el("button", "lr-go", "起点にする"); re.onclick = () => openLinks(p.paper_id);
+    row.append(t, el("span", "lr-m", `${shortRef(p)} · 近さ ${(l[1] / 10).toFixed(0)} · ${linkReason(l)}`), re);
+    list.append(row);
+  });
+  list.append(el("p", "muted small", `近さ（0〜100）は、参考文献の重なり・直接引用・共引用（${meta.source || "OpenAlex"}、${(meta.fetched_at || "").slice(0, 10)}取得）と、本文確認したテーマの重なりから計算した目安です。参考文献を取得できた論文 ${meta.n_with_references ?? "-"}本、テーマだけで結んだ論文 ${meta.n_theme_only ?? "-"}本。`));
+}
+function setupLinks() {
+  lcv = $("#lcv"); if (!lcv) return; lctx = lcv.getContext("2d");
+  const q = $("#link-q"), sug = $("#link-suggest");
+  q.oninput = () => {
+    const v = q.value.trim(); sug.replaceChildren();
+    if (!v) { sug.hidden = true; return; }
+    const hits = linkPapers.filter(p => paperQueryMatches(p, v)).slice(0, 8);
+    hits.forEach(p => { const b = el("button", null); b.append(el("span", "lr-t", p.title), el("span", "lr-m", shortRef(p))); b.onclick = () => { q.value = ""; sug.hidden = true; openLinks(p.paper_id); }; sug.append(b); });
+    if (!hits.length) sug.append(el("p", "muted small", "一致する論文がありません"));
+    sug.hidden = false;
+  };
+  let drag = null, pan = null, moved = false;
+  lcv.addEventListener("mousedown", ev => { const r = lcv.getBoundingClientRect(); const n = lhit(ev.clientX - r.left, ev.clientY - r.top); moved = false; if (n && !n.seed) { drag = n; n.fixed = true; } else pan = { x: ev.clientX, y: ev.clientY, tx: lsim.tx, ty: lsim.ty }; });
+  window.addEventListener("mousemove", ev => {
+    if (drag) { const r = lcv.getBoundingClientRect(), p = ltoWorld(ev.clientX - r.left, ev.clientY - r.top); drag.x = p.x; drag.y = p.y; moved = true; lsim.running = Math.max(lsim.running, 30); }
+    else if (pan) { lsim.tx = pan.tx + ev.clientX - pan.x; lsim.ty = pan.ty + ev.clientY - pan.y; moved = true; }
+  });
+  window.addEventListener("mouseup", () => { if (drag) drag.fixed = false; drag = null; pan = null; });
+  lcv.addEventListener("click", ev => { if (moved) return; const r = lcv.getBoundingClientRect(), n = lhit(ev.clientX - r.left, ev.clientY - r.top); if (n) { state.listSel = n.id; renderDetail(); renderLinks(); } });
+  lcv.addEventListener("dblclick", ev => { const r = lcv.getBoundingClientRect(), n = lhit(ev.clientX - r.left, ev.clientY - r.top); if (n && !n.seed) openLinks(n.id); });
+  lcv.addEventListener("wheel", ev => { ev.preventDefault(); const r = lcv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top, before = ltoWorld(mx, my); lsim.k = Math.max(0.2, Math.min(5, lsim.k * (ev.deltaY < 0 ? 1.1 : 1 / 1.1))); const after = ltoWorld(mx, my); lsim.tx += (after.x - before.x) * lsim.k; lsim.ty += (after.y - before.y) * lsim.k; }, { passive: false });
+  ltick();
+}
+
+/* ---------- 表示テーマ（ライト／ダーク） ---------- */
+function applyTheme(t, save = true) {
+  document.documentElement.dataset.theme = t;
+  const b = $("#theme-toggle");
+  if (b) { b.textContent = t === "dark" ? "ライトモード" : "ダークモード"; b.setAttribute("aria-pressed", String(t === "dark")); }
+  if (save) try { localStorage.setItem("jaxmaps-theme", t); } catch (e) {}
+}
+window.addEventListener("DOMContentLoaded", () => {
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light", false);
+  $("#theme-toggle")?.addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+  setupLinks();
+});
