@@ -14,6 +14,12 @@ const $ = (s, r = document) => r.querySelector(s);
 const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
 const paperById = Object.fromEntries(D.papers.map(p => [p.paper_id, p]));
 const label = k => (D.domain_labels && D.domain_labels[k]) || k;
+const paperUrl = p => p.doi ? "https://doi.org/" + p.doi : "";
+function paperTitle(p,className="t") {
+  const url=paperUrl(p), title=el(url?"a":"span",className,p.title);
+  if(url){title.href=url;title.target="_blank";title.rel="noopener noreferrer";}
+  return title;
+}
 
 /* 生成りの紙面で沈まないよう、彩度を落として明度差をつけた9色。 */
 const GROUP_COLOR = {
@@ -24,7 +30,7 @@ const GROUP_COLOR = {
 const groupOf = {};
 Object.entries(D.display_groups).forEach(([g, v]) => v.domains.forEach(d => (groupOf[d] = g)));
 const colorOf = d => GROUP_COLOR[groupOf[d]] || "#8a8a90";
-/* 聖路加のバリデーション表から起こした検証済み尺度。領域ごとに引けるようにする。 */
+/* 尺度を領域ごとに表示する。 */
 const SCALES_BY_DOMAIN = {};
 (D.scales || []).forEach(s => { if (s.domain) (SCALES_BY_DOMAIN[s.domain] = SCALES_BY_DOMAIN[s.domain] || []).push(s); });
 const hasScale = d => !!SCALES_BY_DOMAIN[d];
@@ -227,13 +233,14 @@ function renderDetail() {
   if (state.selEdge) {
     const e = state.selEdge;
     d.append(el("h3", null, `${label(e.s)} → ${label(e.t)}`));
-    d.append(el("p", "muted small", `${e.ids.length} 論文。「関連」の問いの主分類から作った辺で、因果関係ではありません。`));
+    d.append(el("p", "muted small", `${e.ids.length} 論文`));
     e.ids.forEach(id => {
       const p = paperById[id]; const c = el("div", "mini");
-      c.append(el("div", "t", p.title));
+      c.append(paperTitle(p));
       c.append(el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
-      c.tabIndex=0;c.setAttribute("role","button");c.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();c.click();}};
-      c.onclick = () => { state.listSel = id; state.sel=state.selEdge=null;state.tab = "list"; refresh(); };
+      const info=el("button","paper-details","調査情報を見る");
+      info.onclick=()=>{state.listSel=id;state.sel=state.selEdge=null;renderDetail();};
+      c.append(info);
       d.append(c);
     });
     return;
@@ -246,15 +253,11 @@ function renderDetail() {
     const qb=el("button","survey-jump","この概念の質問を年度別に見る →"); qb.onclick=()=>openSurvey({domain:state.sel});d.append(qb);
     const sc = SCALES_BY_DOMAIN[state.sel] || [];
     if (sc.length) {
-      d.append(el("h4", "sub-h", "聖路加の表に登録された尺度"));
-      d.append(el("p", "muted small", "出典: " + D.scales_source));
+      d.append(el("h4", "sub-h", "関連する尺度"));
       sc.forEach(s => {
         const c = el("div", "mini");
         c.append(el("div", "t", s.scale + (s.aliases && s.aliases.length ? `（別表記: ${s.aliases.join("、")}）` : "")));
-        c.append(el("div", "m", `グレード ${s.grades.join("/")}／${s.n_items}項目／調査波 ${s.years.join("・")}`));
-        if (s.domain_note) c.append(el("div", "m warnnote", s.domain_note));
-        c.append(el("div", "m", "対応づけ: " + s.domain_basis));
-        (s.references_ja.concat(s.references_en)).slice(0, 2).forEach(r => c.append(el("div", "m ref", r)));
+        c.append(el("div", "m", `調査年 ${s.years.join("・")} · 質問を見る →`));
         c.onclick=()=>openSurvey({scale:s.scale});
         d.append(c);
       });
@@ -266,7 +269,7 @@ function renderDetail() {
       sv.sort((x, y) => y.n_survey_items - x.n_survey_items).slice(0, 6).forEach(r => {
         const c = el("div", "mini");
         c.append(el("div", "t", r.subcategory));
-        c.append(el("div", "m", `${r.main_category}／${r.n_survey_items}項目（対応づけの確信度 ${r.mapping_conf}）`));
+        c.append(el("div", "m", `${r.main_category}／${r.n_survey_items}項目`));
         d.append(c);
       });
       d.append(el("p", "muted small", D.survey_coverage_note));
@@ -283,23 +286,19 @@ function renderDetail() {
   }
   const p = state.listSel && paperById[state.listSel];
   if (!p) { d.append(el("p", "muted", "円か線を選ぶと、ここに内訳が出ます。")); return; }
-  d.append(el("h3", null, p.title));
+  const heading=el("h3");heading.append(paperTitle(p,"paper-title"));d.append(heading);
   d.append(el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
-  if (p.doi) { const a = el("a", "doi", p.doi); a.href = "https://doi.org/" + p.doi; a.target = "_blank"; d.append(a); }
+  if (p.doi) { const a = el("a", "doi", "論文を開く ↗"); a.href = paperUrl(p); a.target = "_blank"; a.rel="noopener noreferrer"; d.append(a); }
   const box = el("div", "kvs");
   const kv = (k, v) => { const r = el("div", "kv"); r.append(el("span", "k", k), el("span", "v", String(v))); box.append(r); };
-  kv("同定の根拠", p.identity_basis);
   kv("問いの型", D.question_types[p.question_type] || p.question_type);
   kv("主曝露", D.domains[p.exposure_domain] || D.role_unresolved[p.exposure_domain] || p.exposure_domain);
   kv("主アウトカム", D.domains[p.outcome_domain] || D.role_unresolved[p.outcome_domain] || p.outcome_domain);
   kv("対象集団", D.populations[p.population] || p.population);
   kv("デザイン", D.designs[p.design] || p.design);
   kv("調査", p.study);
-  kv("調査波（機械判定）", p.waves_yes.join(", ") || "確定せず");
-  if (p.waves_verified) { kv("調査波（本文確認）", p.waves_verified.join(", ")); kv("根拠（逐語）", "「" + p.wave_evidence + "」"); }
+  kv("調査年", (p.waves_verified?.length?p.waves_verified:p.waves_yes).map(y=>y+"年").join("、") || "未確認");
   kv("効果推定値の報告", p.has_effect_estimate);
-  kv("資料", p.documents.join(" / "));
-  kv("確認状態", p.verification);
   d.append(box);
   const wb=el("button","survey-jump","関連する調査年の質問を探す →");
   wb.onclick=()=>{const waves=p.waves_verified?.length?p.waves_verified:p.waves_yes;const year=String(waves?.[0]||"").match(/20\d{2}/)?.[0];openSurvey({year:year||"",study:["JACSIS","JASTIS"].includes(p.study?.toUpperCase())?p.study.toUpperCase():""});};d.append(wb);
@@ -316,8 +315,8 @@ function renderList() {
     box.append(e); return;
   }
   rows.forEach(p => {
-    const c = el("div", "card" + (state.listSel === p.paper_id ? " on" : ""));
-    const t = el("div", "t", p.title);
+    const c = el("article", "card" + (state.listSel === p.paper_id ? " on" : ""));
+    const t = paperTitle(p);
     if (p.title_is_filename) t.append(el("span", "warn", "書誌未整備"));
     c.append(t, el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
     const pr = el("div", "pair");
@@ -328,11 +327,13 @@ function renderList() {
     const m2 = el("div", "m2");
     m2.append(el("span", "tag", (D.question_types[p.question_type] || "").split("（")[0] || p.question_type));
     m2.append(el("span", "tag", p.study));
-    if (p.waves_yes.length) m2.append(el("span", "tag", "波 " + p.waves_yes.join("/")));
-    m2.append(el("span", "badge " + (p.waves_verified ? "ok" : "machine"), p.waves_verified ? "本文確認（調査波）" : "機械判定のみ"));
+    const years=p.waves_verified?.length?p.waves_verified:p.waves_yes;
+    if (years.length) m2.append(el("span", "tag", "調査年 " + years.map(y=>y+"年").join("・")));
+    m2.append(el("span", "badge " + (p.waves_verified ? "ok" : "machine"), p.waves_verified ? "調査年確認済み" : "調査年未確認"));
     c.append(m2);
-    c.tabIndex=0; c.setAttribute("role","button"); c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();c.click();}};
-    c.onclick = () => { state.listSel = p.paper_id; state.sel = null; state.selEdge = null; refresh(); };
+    const info=el("button","paper-details","調査情報を見る");
+    info.onclick = () => { state.listSel = p.paper_id; state.sel = null; state.selEdge = null; refresh(); };
+    c.append(info);
     box.append(c);
   });
 }
@@ -346,7 +347,7 @@ function renderData() {
   kv(t1, "資料（PDF）", D.meta.n_documents);
   kv(t1, "DOIで同定できた論文", D.meta.n_papers_by_doi);
   kv(t1, "同定が暫定の論文", D.meta.n_papers_provisional);
-  kv(t1, "調査波を本文確認した論文", D.meta.n_wave_verified);
+  kv(t1, "調査年を本文確認した論文", D.meta.n_wave_verified);
   kv(t1, "関連の辺に数えた問いの型", D.meta.counted_question_type);
   box.append(t1);
   sec("関連に数えなかった論文");
@@ -354,12 +355,10 @@ function renderData() {
   const t2 = el("div", "kvs");
   Object.entries(D.pairs_excluded).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => kv(t2, k, v + " 論文"));
   box.append(t2);
-  sec("聖路加の表に登録された尺度");
-  box.append(el("p", "muted small", "出典: " + D.scales_source));
-  box.append(el("p", "small", "グレードA = " + D.scales_grade_definition.A + "／グレードB = " + D.scales_grade_definition.B));
+  sec("尺度一覧");
   const st = el("div", "kvs");
   (D.scales || []).forEach(s => kv(st, s.scale.slice(0, 30),
-    `${s.grades.join("/")}｜${s.n_items}項目｜${s.domain ? (D.domain_labels[s.domain] || s.domain) : "該当する領域なし"}`));
+    `${s.years.join("・")}年｜${s.domain ? (D.domain_labels[s.domain] || s.domain) : "その他"}`));
   box.append(st);
   sec("調査票にあり、この索引で主分類の登録がない内容");
   box.append(el("p", "muted small", D.survey_crosswalk_note));
@@ -369,7 +368,7 @@ function renderData() {
   un.forEach(r => kv(ut, `${r.n_survey_items}項目`, `[${r.main_category}] ${r.subcategory}`));
   box.append(ut);
   sec("2020／2021の調査票に対応分類が無い領域");
-  box.append(el("p", "muted small", "この表は JACSIS 2020・2021 しか扱っていない。対応が無いことは、後年の波や JASTIS で追加された項目であることを意味する場合が多い。下の件数は、この索引に登録された主曝露・主アウトカムの論文数です。"));
+  box.append(el("p", "muted small", "この表は JACSIS 2020・2021 しか扱っていない。対応が無いことは、後年の調査や JASTIS で追加された項目であることを意味する場合が多い。下の件数は、この索引に登録された主曝露・主アウトカムの論文数です。"));
   const dt = el("div", "kvs");
   (D.domains_not_in_2020_2021_survey || []).forEach(x => kv(dt, x.label, `主問いにした論文 ${x.n_papers_as_main} 本`));
   box.append(dt);
@@ -453,7 +452,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const after = toWorld(mx, my);
     sim.tx += (after.x - before.x) * sim.k; sim.ty += (after.y - before.y) * sim.k;
   }, { passive: false });
-  $("#foot").textContent = `収載 論文${D.meta.n_papers}・資料${D.meta.n_documents}／調査波を本文確認 ${D.meta.n_wave_verified}件・その他は機械判定／調査票は出典と版を確認できます。関連の線は因果を示しません。`;
+  $("#foot").textContent = `JACSIS / JASTIS ｜ ${D.meta.n_papers}論文 ｜ 関連の線は因果関係を示しません。`;
   const g = renderStats(); layout(g, false); refresh(false); tick();
 });
 
@@ -464,7 +463,7 @@ function downloadFile(name,text,type) {
 }
 function csvCell(v) {const s=String(v??"");return '"'+(/^[=+@-]/.test(s)?"'":"")+s.replace(/"/g,'""')+'"';}
 function exportPapers() {
-  const rows=[["タイトル","著者","誌名","出版年","調査","調査波","主曝露","主アウトカム","確認状態","DOI"],...filteredPapers().map(p=>[p.title,p.first_author,p.journal,p.year,p.study,(p.waves_verified?.length?p.waves_verified:p.waves_yes||[]).join(" / "),label(p.exposure_domain),label(p.outcome_domain),p.verification,p.doi])];
+  const rows=[["タイトル","著者","誌名","出版年","調査","調査年","主曝露","主アウトカム","確認状態","DOI"],...filteredPapers().map(p=>[p.title,p.first_author,p.journal,p.year,p.study,(p.waves_verified?.length?p.waves_verified:p.waves_yes||[]).join(" / "),label(p.exposure_domain),label(p.outcome_domain),p.verification,p.doi])];
   downloadFile("JAxMAPs-papers.csv","\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8");
 }
 function renderMatrix() {
