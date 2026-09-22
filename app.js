@@ -28,6 +28,9 @@ const colorOf = d => GROUP_COLOR[groupOf[d]] || "#8a8a90";
 const SCALES_BY_DOMAIN = {};
 (D.scales || []).forEach(s => { if (s.domain) (SCALES_BY_DOMAIN[s.domain] = SCALES_BY_DOMAIN[s.domain] || []).push(s); });
 const hasScale = d => !!SCALES_BY_DOMAIN[d];
+/* 調査票（JACSIS 2020/2021）の下位分類を領域ごとに引く */
+const SURVEY_BY_DOMAIN = {};
+(D.survey_crosswalk || []).forEach(r => { if (r.domain) (SURVEY_BY_DOMAIN[r.domain] = SURVEY_BY_DOMAIN[r.domain] || []).push(r); });
 
 const state = { tab: "map", q: "", groups: new Set(), minPapers: 1, verified: false,
                 sel: null, selEdge: null, listSel: null };
@@ -234,6 +237,17 @@ function renderDetail() {
       });
       d.append(el("h4", "sub-h", "この概念が現れる関連"));
     }
+    const sv = SURVEY_BY_DOMAIN[state.sel] || [];
+    if (sv.length) {
+      d.append(el("h4", "sub-h", "調査票での位置づけ（JACSIS 2020／2021）"));
+      sv.sort((x, y) => y.n_survey_items - x.n_survey_items).slice(0, 6).forEach(r => {
+        const c = el("div", "mini");
+        c.append(el("div", "t", r.subcategory));
+        c.append(el("div", "m", `${r.main_category}／${r.n_survey_items}項目（対応づけの確信度 ${r.mapping_conf}）`));
+        d.append(c);
+      });
+      d.append(el("p", "muted small", D.survey_coverage_note));
+    }
     const es = sim.edges.filter(e => e.s === state.sel || e.t === state.sel).sort((a, b) => b.n - a.n);
     es.forEach(e => {
       const c = el("div", "mini");
@@ -326,6 +340,18 @@ function renderData() {
   (D.scales || []).forEach(s => kv(st, s.scale.slice(0, 30),
     `${s.grades.join("/")}｜${s.n_items}項目｜${s.domain ? (D.domain_labels[s.domain] || s.domain) : "該当する領域なし"}`));
   box.append(st);
+  sec("調査票にはあるが、主問いとして扱った論文が無い内容");
+  box.append(el("p", "muted small", D.survey_crosswalk_note));
+  const un = (D.survey_crosswalk || []).filter(r => r.n_papers_as_main === 0)
+    .sort((a, b) => b.n_survey_items - a.n_survey_items);
+  const ut = el("div", "kvs");
+  un.forEach(r => kv(ut, `${r.n_survey_items}項目`, `[${r.main_category}] ${r.subcategory}`));
+  box.append(ut);
+  sec("2020／2021の調査票に対応分類が無い領域");
+  box.append(el("p", "muted small", "この表は JACSIS 2020・2021 しか扱っていない。対応が無いことは、後年の波や JASTIS で追加された項目であることを意味する場合が多い。実際、下の領域はいずれも論文側に実体がある。"));
+  const dt = el("div", "kvs");
+  (D.domains_not_in_2020_2021_survey || []).forEach(x => kv(dt, x.label, `主問いにした論文 ${x.n_papers_as_main} 本`));
+  box.append(dt);
   sec("空白の読み方");
   box.append(el("p", "small", D.meta.empty_cell_label));
   sec("生成元");
