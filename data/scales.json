@@ -1,0 +1,845 @@
+{
+ "_source": "聖路加国際大学公衆衛生大学院 山﨑あかり（2024）・山崎友紀乃（2025）作成のJACSIS 2020/2021 バリデーション表（Vault/260406-data可視化プロジェクト）",
+ "_grade_definition": {
+  "A": "既存の尺度名があり、公表されているもの",
+  "B": "尺度の可能性はあるが、エビデンスが不明なもの",
+  "C": "上記以外（尺度として扱わない項目）"
+ },
+ "n_scales": 24,
+ "scales": [
+  {
+   "scale": "新職業性ストレス簡易調査票",
+   "grades": [
+    "A",
+    "B",
+    "C"
+   ],
+   "n_items": 212,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "COVID-19-related factors",
+    "Occupational factors",
+    "Socioeconomic factors"
+   ],
+   "subcategories": [
+    "Delayed medical care due to COVID-19 pandemic",
+    "Life events canceled by COVID-19 pandemic",
+    "Current employment situation (e.g., full-time, part-time, unemployed, retired)",
+    "Work functioning impairment (WFun)"
+   ],
+   "variables": [
+    "Academic attainment",
+    "Condition worsened",
+    "Could not be hospitalized or delayed",
+    "Could not receive treatment or surgery",
+    "Could not visit a dentist",
+    "Could not visit a doctor due to unexpected symptoms",
+    "House ownership and rooms",
+    "Life events canceled by COVID-19 pandemic"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "職業性ストレス簡易調査票は英語のvalidation あるが、新職業性～は不明"
+   ],
+   "example_questions": [
+    "最近1カ月間のあなたのお仕事や家庭の状況や満足度について伺います。",
+    "下記のそれぞれについてあてはまる選択肢を選んでください。",
+    "現在、配偶者（夫または妻）は、いますか。配偶者には、事実上夫婦として生活しているが、婚姻届を提出していない場合も含みます。"
+   ],
+   "aliases": [],
+   "domain": "work_employment",
+   "domain_conf": 0.44,
+   "domain_basis": "Jevの判定のみ（人手確認なし）",
+   "domain_note": "職場のストレス要因と反応を広く測る。就労・働き方と心理的苦痛にまたがる。確信度0.44。要確認。"
+  },
+  {
+   "scale": "FCV-19S",
+   "grades": [
+    "A",
+    "B",
+    "C"
+   ],
+   "n_items": 79,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "Risk communication",
+    "COVID-19 related factors",
+    "COVID-19-related factors"
+   ],
+   "subcategories": [
+    "Use of mass media as a source of information",
+    "Fear of COVID-19",
+    "Fear of death, infection, traffic accident, etc.",
+    "Fear of COVID-19 (FCV-19S)"
+   ],
+   "variables": [
+    "Fear of COVID-19",
+    "Fear of COVID-19 (Economically poor)",
+    "Fear of COVID-19 (caring kids)",
+    "Fear of COVID-19 (difficulty with activity)",
+    "Fear of COVID-19 (family death)",
+    "Fear of COVID-20",
+    "Fear of COVID-21",
+    "Fear of COVID-22"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7100496/"
+   ],
+   "example_questions": [
+    "あなたは、下記のそれぞれの項目についてあてはまりますか。",
+    "あなたは、下記のそれぞれの項目についてあてはまりますか。※この設問は、それぞれ横方向（→）にお答えください。 1. 2. 3. 4. 5. 6. 7. 8. 9. 10.",
+    "あなたは、下記のそれぞれの項目についてあてはまりますか。※この設問は、それぞれ横方向（→）にお答えください。"
+   ],
+   "aliases": [],
+   "domain": "covid19_infection",
+   "domain_conf": 0.39,
+   "domain_basis": "Jevの判定のみ（人手確認なし）",
+   "domain_note": "Fear of COVID-19 Scale。COVID-19に対する恐怖という心理的反応を測る。領域としてCOVID-19感染と心理的苦痛のどちらにも寄せられ、Jevの確信度も低い（0.39）。要確認。"
+  },
+  {
+   "scale": "日本語版Lubben Social Network Scale短縮版",
+   "grades": [
+    "A",
+    "B",
+    "C"
+   ],
+   "n_items": 68,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Socioeconomic factors",
+    "Usual and problematic behaviors",
+    "Social networking"
+   ],
+   "subcategories": [
+    "Academic attainment",
+    "Daily-life behaviors (e.g., going out)",
+    "Types of health insurance",
+    "House ownership and rooms"
+   ],
+   "variables": [
+    "Brushing teeth",
+    "Chatting or casual talks with non-household members",
+    "Gig work through online platforms",
+    "Going out",
+    "Income reduction",
+    "Indoor hobbies",
+    "Job change",
+    "Job reduction"
+   ],
+   "references_ja": [
+    "https://www.jstage.jst.go.jp/article/geriatrics/48/2/48_2_149/_pdf,"
+   ],
+   "references_en": [
+    "https://journals.lww.com/familyandcommunityhealth/citation/1988/11000/assessing_social_networks_among_elderly.8.aspx"
+   ],
+   "example_questions": [
+    "ここでは、家族や親戚、近くに住んでいる人を含むあなたの友人全体について考えます。下記の質問に最もあてはまる回答を選んでください。",
+    "あなたの医療保険の加入状況について、保険証又は組合員証で確認して1つだけあてはまるものをお答えください。",
+    "あなたが最後に卒業（中退）された、または在学中の学校についてお答えください。"
+   ],
+   "aliases": [],
+   "domain": "social_capital_support",
+   "domain_conf": 0.54,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "UCLA-LS3 (SF-3)",
+   "grades": [
+    "A",
+    "B"
+   ],
+   "n_items": 17,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "Health-related factors",
+    "Usual and problematic behaviors"
+   ],
+   "subcategories": [
+    "Change of physical or mental status",
+    "Depression (Kessler-6)",
+    "Daily-life behaviors (e.g., going out)"
+   ],
+   "variables": [
+    "Lonliness",
+    "Lonliness (before  and after COVID-19)",
+    "Mental state",
+    "Overall household performance",
+    "Overall work/study performance",
+    "Physical health",
+    "Relationship with children",
+    "Relationship with family (other than spouse and children)"
+   ],
+   "references_ja": [
+    "https://pubmed.ncbi.nlm.nih.gov/31349835/",
+    "ulcaには10項目版と３項目版があり、これは３項目版"
+   ],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/8576833/"
+   ],
+   "example_questions": [
+    "直近30日間に、どれくらいの頻度で次のことがありましたか。",
+    "直近30日間に、どれくらいの頻度で次のことがありましたか。※この設問は、それぞれ横方向（→）にお答えください。 1. 2. 3. 4. 5. 6. 7. 8. 9. 10.",
+    "2020年1月以前と比べて、最近1ヶ月間に、下記はそれぞれどのように変化しましたか。※この設問は、それぞれ横方向（→）にお答えください。"
+   ],
+   "aliases": [],
+   "domain": "loneliness_isolation",
+   "domain_conf": 0.55,
+   "domain_machine": "mental_distress",
+   "domain_basis": "人手で訂正",
+   "domain_note": "UCLA Loneliness Scale 第3版の短縮版であり、測っているのは孤独感。Jevは心理的苦痛を選んだが（確信度0.55）、尺度の定義から訂正した。"
+  },
+  {
+   "scale": "ACE-J",
+   "grades": [
+    "A"
+   ],
+   "n_items": 15,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Socioeconomic factors"
+   ],
+   "subcategories": [
+    "Adverse childhood experience"
+   ],
+   "variables": [
+    "Adverse childhood experience"
+   ],
+   "references_ja": [
+    "https://onlinelibrary.wiley.com/doi/10.1111/pcn.13464"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "あなたが18歳になるまでに、下記のことを経験しましたか。"
+   ],
+   "aliases": [],
+   "domain": "ace_violence",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "WFun",
+   "grades": [
+    "A"
+   ],
+   "n_items": 14,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "Occupational factors"
+   ],
+   "subcategories": [
+    "Work functioning impairment (WFun)"
+   ],
+   "variables": [
+    "Approach to Work",
+    "Work functioning impairment"
+   ],
+   "references_ja": [
+    "https://pubmed.ncbi.nlm.nih.gov/26345178/"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "普段の体調の良い時と比べて、あなたは現在、お仕事に関して次のようなことが、どのくらいありますか。"
+   ],
+   "aliases": [],
+   "domain": "work_employment",
+   "domain_conf": 0.89,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "K6",
+   "grades": [
+    "A",
+    "B"
+   ],
+   "n_items": 13,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "Usual and problematic behaviors",
+    "Health-related factors"
+   ],
+   "subcategories": [
+    "Daily-life behaviors (e.g.,going out)",
+    "Depression (Kessler-6)"
+   ],
+   "variables": [
+    "Depression"
+   ],
+   "references_ja": [
+    "https://pubmed.ncbi.nlm.nih.gov/18763695/"
+   ],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/12214795/"
+   ],
+   "example_questions": [
+    "直近30日間に、どれくらいの頻度で次のことがありましたか。",
+    "直近30日間に、どれくらいの頻度で次のことがありましたか。※この設問は、それぞれ横方向（→）にお答えください。 1. 2. 3. 4. 5. 6. 7. 8. 9. 10."
+   ],
+   "aliases": [
+    "Kessler-6"
+   ],
+   "domain": "mental_distress",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "J-ZBI",
+   "grades": [
+    "A",
+    "B"
+   ],
+   "n_items": 10,
+   "years": [
+    2020
+   ],
+   "main_categories": [
+    "Household factors"
+   ],
+   "subcategories": [
+    "Caregiving (e.g., time, severity)"
+   ],
+   "variables": [
+    "Burden of elder care",
+    "Burden of elder care(others help)",
+    "Burden of elder care(related COVID-19)"
+   ],
+   "references_ja": [
+    "荒井由美子.介護負担度の評価.総合リハビリテーシ\nョン 2002；30(11)：1005-9"
+   ],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/7203086/"
+   ],
+   "example_questions": [
+    "各質問について、あなたの気持ちに最もあてはまると思うものを選んでください。※この設問は、それぞれ横方向（→）にお答えください。"
+   ],
+   "aliases": [],
+   "domain": "caregiving",
+   "domain_conf": 0.94,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "TIPI",
+   "grades": [
+    "A"
+   ],
+   "n_items": 10,
+   "years": [
+    2020
+   ],
+   "main_categories": [
+    "Health-related factors"
+   ],
+   "subcategories": [
+    "Personality (TIPI)"
+   ],
+   "variables": [
+    "Personality"
+   ],
+   "references_ja": [
+    "https://www.jstage.jst.go.jp/article/personality/21/1/21_40/_article/-char/ja/"
+   ],
+   "references_en": [
+    "https://psycnet.apa.org/record/2003-09807-003"
+   ],
+   "example_questions": [
+    "以下の項目について、あなた自身にどのくらいあてはまりますか。"
+   ],
+   "aliases": [],
+   "domain": null,
+   "domain_conf": 0.8,
+   "domain_basis": "Jevの判定のみ（人手確認なし）",
+   "domain_note": "Ten Item Personality Inventory。パーソナリティ特性を測る尺度で、現在の語彙に該当する領域が無い。語彙の不足として記録する。"
+  },
+  {
+   "scale": "EQ-5D",
+   "grades": [
+    "A"
+   ],
+   "n_items": 10,
+   "years": [
+    2020,
+    2021
+   ],
+   "main_categories": [
+    "Health-related factors",
+    "Usual and problematic behaviors"
+   ],
+   "subcategories": [
+    "Daily-life behaviors (e.g.,going out)",
+    "Change of physical or mental status",
+    "Pain",
+    "Anxiety, Depression",
+    "Health-related quality of life (EQ5D-5L)"
+   ],
+   "variables": [
+    "Quality-Adjusted Life Year；QALY",
+    "Health-related quality of life"
+   ],
+   "references_ja": [
+    "https://www.niph.go.jp/journal/data/64-1/201564010008.pdf"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "移動の程度",
+    "身の回りの管理",
+    "ふだんの活動（例：仕事、勉強、家事、家族・余暇活動）",
+    "ふだんの活動（例：仕事、勉強、家事、家族･余暇活動）"
+   ],
+   "aliases": [
+    "EQ5D-5L"
+   ],
+   "domain": "qol_wellbeing",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "SSS-8",
+   "grades": [
+    "A",
+    "B"
+   ],
+   "n_items": 9,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Health-related factors"
+   ],
+   "subcategories": [
+    "Somatic symptom scale (SSS-8)"
+   ],
+   "variables": [
+    "Somatic symptoms",
+    "Somatic symptoms (tooth pain)"
+   ],
+   "references_ja": [
+    "https://www.jstage.jst.go.jp/article/jjpm/56/9/56_931/_pdf"
+   ],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/24276929/"
+   ],
+   "example_questions": [
+    "最近1週間を通して、以下の体の問題について、どの程度悩まされていますか。"
+   ],
+   "aliases": [],
+   "domain": "physical_disease_symptoms",
+   "domain_conf": 0.93,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "ワクチン接種ためらい尺度(VHS)成人版",
+   "grades": [
+    "A"
+   ],
+   "n_items": 9,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Other factors"
+   ],
+   "subcategories": [
+    "Vaccine Hesitensy scale"
+   ],
+   "variables": [
+    "Vaccine Hesitensy"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/30940484/"
+   ],
+   "example_questions": [
+    "次の1～9では、あなた自身についてのあなたの考えをお聞きします。以下の中から最もあてはまるものを1つ選んでください。"
+   ],
+   "aliases": [],
+   "domain": "vaccination",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "好意的性差別尺度",
+   "grades": [
+    "A"
+   ],
+   "n_items": 8,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Other factors"
+   ],
+   "subcategories": [
+    "Ambivalent Sexism Inventory"
+   ],
+   "variables": [
+    "Gender"
+   ],
+   "references_ja": [
+    "宇井美代子・山本眞理子　2001　Ambivalent Sexism \nInventory （ASI）日本語版の信頼性と妥当性の検\n討　日本社会心理学会第42回大会発表論文集，\n300-301．"
+   ],
+   "references_en": [
+    "Glick, P., & Fiske, S. T. 1996　The Ambivalent Sexism \nInventory: Differentiating Hostile and Benevolent \nSexism Journal of Personality and Social Psychology, \n70, 491-512."
+   ],
+   "example_questions": [
+    "次のうち、あてはまる選択肢を選んでください。"
+   ],
+   "aliases": [],
+   "domain": "beliefs_attitudes",
+   "domain_conf": 0.61,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "食事関連QOL尺度",
+   "grades": [
+    "A"
+   ],
+   "n_items": 8,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Other factors"
+   ],
+   "subcategories": [
+    "Diet related quality of life"
+   ],
+   "variables": [
+    "Diet related quality of life"
+   ],
+   "references_ja": [
+    "https://www.jstage.jst.go.jp/article/jph/66/3/66_18-062/_pdf/-char/ja"
+   ],
+   "references_en": [
+    "Satter Eating Competence Model(ecSatter)　https://www.sciencedirect.com/science/article/pii/S1499404607000942"
+   ],
+   "example_questions": [
+    "あなたの最近1か月間の食生活について伺います。次のそれぞれについて、あてはまるものを1つ選んでください。"
+   ],
+   "aliases": [],
+   "domain": "diet_nutrition_obesity",
+   "domain_conf": 0.92,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "食料不安の経験尺度（FIES）",
+   "grades": [
+    "A"
+   ],
+   "n_items": 8,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Other factors"
+   ],
+   "subcategories": [
+    "Food insecurity experience scale"
+   ],
+   "variables": [
+    "Food insecurity experience"
+   ],
+   "references_ja": [],
+   "references_en": [],
+   "example_questions": [
+    "過去12か月間に以下のようなことはありましたか。"
+   ],
+   "aliases": [],
+   "domain": "income_poverty",
+   "domain_conf": 0.96,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "Vaccine conspiracy belief scale",
+   "grades": [
+    "A"
+   ],
+   "n_items": 7,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Risk communication"
+   ],
+   "subcategories": [
+    "Personal value and beliefs"
+   ],
+   "variables": [
+    "Vaccine conspiracy belief"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://www.sciencedirect.com/science/article/pii/S2405852116300325"
+   ],
+   "example_questions": [
+    "次の1～7では、あなた自身についてのあなたの考えをお聞きします。以下の中から最もあてはまるものを1つ選んでください。"
+   ],
+   "aliases": [],
+   "domain": "vaccination",
+   "domain_conf": 0.78,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "De Jong Jong Gierveld short scales for emotional and social",
+   "grades": [
+    "A"
+   ],
+   "n_items": 6,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Health-related factors"
+   ],
+   "subcategories": [
+    "Loneliness(De Jong Jong Gierveld short scales for emotional and social)"
+   ],
+   "variables": [
+    "Loneliness"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/20730083/"
+   ],
+   "example_questions": [
+    "次の問いは、現在のあなたの状況に、どの程度あてはまりますか。もっともよくあてはまるものをお選びください。"
+   ],
+   "aliases": [],
+   "domain": "loneliness_isolation",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "COVID-19 Vaccine Confidence Scale",
+   "grades": [
+    "A"
+   ],
+   "n_items": 6,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "COVID-19-related factors"
+   ],
+   "subcategories": [
+    "Oxford COVID-19 Vaccine Confidence & Complacency Scale"
+   ],
+   "variables": [
+    "COVID-19 Vaccine Confidence"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/33305716/"
+   ],
+   "example_questions": [
+    "次の1～10では、あなた自身についてのあなたの考えをお聞きします。以下の中から最もあてはまるものを1つ選んでください。"
+   ],
+   "aliases": [],
+   "domain": "vaccination",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "LOT-R",
+   "grades": [
+    "A"
+   ],
+   "n_items": 6,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Risk communication"
+   ],
+   "subcategories": [
+    "Time management and procrastination?"
+   ],
+   "variables": [
+    "optimism"
+   ],
+   "references_ja": [
+    "https://www.jstage.jst.go.jp/article/jahp/15/1/15_59/_article/-char/ja/"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "あなたは、下記それぞれについてあてはまりますか。"
+   ],
+   "aliases": [],
+   "domain": "beliefs_attitudes",
+   "domain_conf": 0.43,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "CCHL",
+   "grades": [
+    "A"
+   ],
+   "n_items": 5,
+   "years": [
+    2020
+   ],
+   "main_categories": [
+    "Risk communication"
+   ],
+   "subcategories": [
+    "Health literacy (CCHL)"
+   ],
+   "variables": [
+    "Health literacy"
+   ],
+   "references_ja": [
+    "https://pubmed.ncbi.nlm.nih.gov/18515303/"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "あなたは、もし必要になったら、病気や健康に関連した情報を自分自身で探したり利用したりすることができると思いますか。下記それぞれについてお答えください。※この設問は、それぞれ横方向（→）にお答えください。 1 2. 3. 4. 5."
+   ],
+   "aliases": [],
+   "domain": "health_literacy_information",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "CAGE",
+   "grades": [
+    "A"
+   ],
+   "n_items": 4,
+   "years": [
+    2020
+   ],
+   "main_categories": [
+    "Usual and problematic behaviors"
+   ],
+   "subcategories": [
+    "Problematic alcohol behaviors (including CAGE questionnaire)"
+   ],
+   "variables": [
+    "Problematic alcohol behaviors"
+   ],
+   "references_ja": [],
+   "references_en": [
+    "https://pubmed.ncbi.nlm.nih.gov/6471323/"
+   ],
+   "example_questions": [
+    "あなたは、2020年3月以降に、以下のことがありましたか。※この設問は、それぞれ横方向（→）にお答えください。 1.飲酒量を減らさなければいけないと感じたことがありますか 2.他人があなたの飲酒を非難するので気にさわったことがありますか 3",
+    "あなたは、2020年3月以降に、以下のことがありましたか。※この設問は、それぞれ横方向（→）にお答えください。 1.飲酒量を減らさなければいけないと感じたことがありますか 2.他人があなたの飲酒を非難するので気にさわったことがありますか 3",
+    "あなたは、2020年3月以降に、以下のことがありましたか。※この設問は、それぞれ横方向（→）にお答えください。 1.飲酒量を減らさなければいけないと感じたことがありますか 2.他人があなたの飲酒を非難するので気にさわったことがありますか 3"
+   ],
+   "aliases": [],
+   "domain": "alcohol",
+   "domain_conf": 1.0,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "HRQOL-4",
+   "grades": [
+    "A"
+   ],
+   "n_items": 3,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Other factors"
+   ],
+   "subcategories": [
+    "Quality life (HR-QoL4)"
+   ],
+   "variables": [
+    "mental status"
+   ],
+   "references_ja": [
+    "https://onlinelibrary.wiley.com/doi/10.1002/1348-9585.12152\nhttps://www.ncbi.nlm.nih.gov/pmc/articles/PMC6970402/"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "過去30日間、以下の状態がどれくらいの日数ありましたか。それぞれの日数をお答えください（0から30日）。（半角数字でご記入ください）"
+   ],
+   "aliases": [],
+   "domain": "qol_wellbeing",
+   "domain_conf": 0.99,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "OCEANS coronavirus conspiracy scale",
+   "grades": [
+    "A"
+   ],
+   "n_items": 3,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "COVID-19-related factors"
+   ],
+   "subcategories": [
+    "Oxford COVID-19 Vaccine Confidence & Complacency Scale"
+   ],
+   "variables": [
+    "coronavirus conspiracy beliefs"
+   ],
+   "references_ja": [],
+   "references_en": [],
+   "example_questions": [
+    "次の1～10では、あなた自身についてのあなたの考えをお聞きします。以下の中から最もあてはまるものを1つ選んでください。"
+   ],
+   "aliases": [],
+   "domain": "vaccination",
+   "domain_conf": 0.94,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  },
+  {
+   "scale": "WHO-HPQ（Health and work Performance Questionnaire）",
+   "grades": [
+    "A"
+   ],
+   "n_items": 1,
+   "years": [
+    2021
+   ],
+   "main_categories": [
+    "Occupational factors"
+   ],
+   "subcategories": [
+    "WHO work performance"
+   ],
+   "variables": [
+    "mental status"
+   ],
+   "references_ja": [
+    "https://pubmed.ncbi.nlm.nih.gov/32173661/"
+   ],
+   "references_en": [],
+   "example_questions": [
+    "過去30日間、以下の状態がどれくらいの日数ありましたか。それぞれの日数をお答えください（0から30日）。（半角数字でご記入ください）"
+   ],
+   "aliases": [],
+   "domain": "work_employment",
+   "domain_conf": 0.98,
+   "domain_basis": "Jevの判定のみ（人手確認なし）"
+  }
+ ],
+ "_merged_aliases": {
+  "Kessler-6": "K6",
+  "EQ5D-5L": "EQ-5D"
+ }
+}
