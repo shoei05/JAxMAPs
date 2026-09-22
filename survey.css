@@ -254,22 +254,38 @@
   #survey-root .sv-dialog[open] { position: static; max-height: none; width: 100%; border: none; overflow: visible; }
 }
 
-/* ---------- テーマ配色（JACSIS＝Zissou1 の青、JASTIS＝ローズ） ---------- */
+/* ---------- テーマ配色（wesanderson Zissou1。JACSIS＝青 #3B9AB2、JASTIS＝金 #E1AF00） ---------- */
 #survey-root { --sv-ink: #2f3437; --sv-muted: #5e666c; --sv-blue: #23707f; --sv-teal: #23707f; --sv-line: #e0dbd7; --sv-paper: #f7f6f4; }
 #survey-root .sv-hero { background: #ffffff; color: var(--sv-ink); border-bottom: 1px solid var(--sv-line); }
-#survey-root .sv-eyebrow { color: #c5487b; }
+#survey-root .sv-eyebrow { color: #3b9ab2; }
 #survey-root .sv-hero p { color: var(--sv-muted); }
 #survey-root .sv-hero-stats { border-left-color: var(--sv-line); }
-#survey-root .sv-hero-stats strong { color: #a8365f; }
-#survey-root .sv-hero-stats strong small { color: #c98aa4; }
+#survey-root .sv-hero-stats strong { color: #23707f; }
+#survey-root .sv-hero-stats strong small { color: #78b7c5; }
 #survey-root .sv-hero-stats span { color: var(--sv-muted); }
-#survey-root .sv-year-button:hover, #survey-root .sv-year-button.is-active { color: #a8365f; background: #f8e8ef; }
+#survey-root .sv-year-button:hover, #survey-root .sv-year-button.is-active { color: #23707f; background: #e3f1f5; }
 #survey-root .sv-wave { border-color: #b9dbe4; background: color-mix(in srgb, #3b9ab2 calc(var(--wave-intensity) * 28%), #f4fafc); color: #1f5f6e; }
 #survey-root .sv-wave:hover { border-color: #3b9ab2; background: #d9eef3; }
 #survey-root .sv-wave.is-active { border-color: #23707f; background: #d4ebf1; box-shadow: 0 0 0 2px #23707f1a; }
-#survey-root .sv-wave-jastis { border-color: #ebc6d5; background: color-mix(in srgb, #c5487b calc(var(--wave-intensity) * 22%), #fdf6f9); color: #8e2f52; }
-#survey-root .sv-wave-jastis:hover, #survey-root .sv-wave-jastis.is-active { border-color: #c5487b; background: #f6dde7; }
+#survey-root .sv-wave-jastis { border-color: #ecd690; background: color-mix(in srgb, #e1af00 calc(var(--wave-intensity) * 26%), #fffbee); color: #6b5300; }
+#survey-root .sv-wave-jastis:hover, #survey-root .sv-wave-jastis.is-active { border-color: #e1af00; background: #f8ecc0; }
 #survey-root .sv-legend-dot { background: #3b9ab2; }
-#survey-root .sv-legend-jastis { background: #c5487b; }
+#survey-root .sv-legend-jastis { background: #e1af00; }
 #survey-root .sv-study-pill { color: #1f6475; background: #e3f1f5; }
-#survey-root .sv-study-pill.is-jastis { color: #8e2f52; background: #f8e8ef; }
+#survey-root .sv-study-pill.is-jastis { color: #6b5300; background: #fbf1cf; }
+
+/* ---------- ダークモード ---------- */
+:root[data-theme="dark"] #survey-root { --sv-ink: #e4e7e9; --sv-muted: #a3acb2; --sv-blue: #9fd3df; --sv-teal: #9fd3df; --sv-line: #333d43; --sv-paper: #1a1f23; }
+:root[data-theme="dark"] #survey-root .sv-hero { background: #22282d; }
+:root[data-theme="dark"] #survey-root .sv-eyebrow, :root[data-theme="dark"] #survey-root .sv-hero-stats strong { color: #78b7c5; }
+:root[data-theme="dark"] #survey-root .sv-wave { border-color: #2f5560; background: color-mix(in srgb, #3b9ab2 calc(var(--wave-intensity) * 35%), #1f2a2e); color: #bfe3ec; }
+:root[data-theme="dark"] #survey-root .sv-wave:hover, :root[data-theme="dark"] #survey-root .sv-wave.is-active { border-color: #78b7c5; background: #24414a; }
+:root[data-theme="dark"] #survey-root .sv-wave-jastis { border-color: #5a4a14; background: color-mix(in srgb, #e1af00 calc(var(--wave-intensity) * 28%), #29261a); color: #f3dc8a; }
+:root[data-theme="dark"] #survey-root .sv-wave-jastis:hover, :root[data-theme="dark"] #survey-root .sv-wave-jastis.is-active { border-color: #ebcc2a; background: #463c16; }
+:root[data-theme="dark"] #survey-root .sv-matrix-empty { background: #1e2428; border-color: #333d43; color: #6b767d; }
+:root[data-theme="dark"] #survey-root .sv-study-pill { color: #9fd3df; background: #1f3339; }
+:root[data-theme="dark"] #survey-root .sv-study-pill.is-jastis { color: #f3dc8a; background: #3a3218; }
+:root[data-theme="dark"] #survey-root .sv-year-button:hover, :root[data-theme="dark"] #survey-root .sv-year-button.is-active { color: #9fd3df; background: #1f3339; }
+:root[data-theme="dark"] #survey-root :is(.sv-overview, .sv-matrix tr > th:first-child, .sv-search-panel, .sv-button, .sv-filter-grid select, .sv-result-actions select, .sv-question, .sv-empty, .sv-dialog, .sv-dialog-toolbar button, .sv-full-item, .sv-comparison, .sv-source-selector select, .sv-original-text pre, .sv-search-input input) { background: #22282d; color: var(--sv-ink); border-color: #333d43; }
+:root[data-theme="dark"] #survey-root :is(.sv-button:hover:not(:disabled), .sv-button.is-active, .sv-saved-button b, .sv-filter-chip, .sv-tag, .sv-tag-transfer, .sv-tag-scale, .sv-dialog-toolbar, .sv-map-links, .sv-options li, .sv-item-index, .sv-variables code, .sv-detail-note, .sv-match-same, .sv-match-different, .sv-provenance-badge, .sv-provenance-badge.is-transfer, .sv-source-list li, .sv-status-badge, .sv-status-badge.is-draft, .sv-draft-inline, .sv-draft-notice, .sv-source-selector, .sv-original-text) { background: #2a3136; color: var(--sv-ink); border-color: #3a444b; }
+:root[data-theme="dark"] #survey-root :is(h2, h3, h4, strong, .sv-qnumber) { color: inherit; }
