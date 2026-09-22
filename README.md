@@ -29,4 +29,3 @@
 ## ファイル
 
 `index.html` を開くだけで利用できます。質問データは `data/survey-data.js`、機械可読版は `data/survey.json`。論文・概念は `data/jaxmaps.json`、尺度は `data/scales.json` にあります。`release-manifest.json` に各ファイルのSHA-256を記録しています。
-
