@@ -27,9 +27,9 @@ function paperTitle(p,className="t") {
 
 /* 生成りの紙面で沈まないよう、彩度を落として明度差をつけたテーマ色。 */
 const GROUP_COLOR = {
-  dependence_preference: "#a2521a", digital_information: "#2f6ca6", mental_psychological: "#6a4e96",
-  relations_social: "#b13a6c", infection_prevention: "#1f7a64", healthcare_use: "#2d6b8f",
-  lifestyle_physical: "#5d8a2f", family_sex: "#b3761e", work_socioeconomic: "#75594a", research_methods: "#527b80",
+  dependence_preference: "#f21a00", digital_information: "#78b7c5", mental_psychological: "#c5487b",
+  relations_social: "#e8a0bd", infection_prevention: "#23707f", healthcare_use: "#3b9ab2",
+  lifestyle_physical: "#e1af00", family_sex: "#f07f3c", work_socioeconomic: "#8a7a86", research_methods: "#a3adb3",
 };
 const groupOf = {};
 Object.entries(D.display_groups).forEach(([g, v]) => v.domains.forEach(d => (groupOf[d] = g)));
@@ -228,10 +228,10 @@ function draw() {
     ctx.beginPath(); ctx.arc(n.x, n.y, rad(n), 0, Math.PI * 2);
     ctx.fillStyle = colorOf(n.id); ctx.fill();
     ctx.lineWidth = n.id === state.sel ? 2.5 : 1;
-    ctx.strokeStyle = n.id === state.sel ? "#14171c" : "#e9e7df"; ctx.stroke();
+    ctx.strokeStyle = n.id === state.sel ? "#2f3437" : "#ffffff"; ctx.stroke();
     if (hasScale(n.id)) {           // 検証済み尺度で測られている概念
       ctx.beginPath(); ctx.arc(n.x, n.y, rad(n) + 3.2, 0, Math.PI * 2);
-      ctx.lineWidth = 1.2; ctx.strokeStyle = "#14171c"; ctx.globalAlpha = dim ? 0.12 : 0.55; ctx.stroke();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = "#2f3437"; ctx.globalAlpha = dim ? 0.12 : 0.55; ctx.stroke();
       ctx.globalAlpha = dim ? 0.15 : 1;
     }
   });
@@ -255,9 +255,9 @@ function draw() {
     ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.font = `${fs}px -apple-system,"Hiragino Sans",sans-serif`;
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(233,231,223,.92)";
+    ctx.fillStyle = "rgba(255,255,255,.9)";
     ctx.fillRect(box.x1, box.y1, box.x2 - box.x1, box.y2 - box.y1);
-    ctx.fillStyle = "#14171c"; ctx.fillText(txt, sx, sy);
+    ctx.fillStyle = "#2f3437"; ctx.fillText(txt, sx, sy);
     ctx.restore();
   });
   ctx.restore();
@@ -559,17 +559,17 @@ function renderMatrix() {
   const scroll=el("div","matrix-scroll");const table=el("table","relation-matrix");table.setAttribute("aria-label","登録された曝露とアウトカム別の論文数");
   const thead=el("thead");const hr=el("tr");const corner=el("th",null,"曝露 ↓ / アウトカム →");hr.append(corner);
   domains.forEach(d=>{const th=el("th");const btn=el("button","matrix-domain",`${label(d)}（${g.nodes.find(n=>n.id===d).n}論文）`);btn.onclick=()=>openDomain(d,true);th.append(btn);th.scope="col";th.style.borderTopColor=colorOf(d);hr.append(th);});thead.append(hr);table.append(thead);
-  const tbody=el("tbody");domains.forEach(a=>{const tr=el("tr");const th=el("th",null,label(a));th.scope="row";tr.append(th);domains.forEach(b=>{const td=el("td");const e=edges[a+"|"+b];if(e){const btn=el("button",null,String(e.n));btn.style.background=`rgba(29,70,108,${Math.min(.85,.16+Math.log2(e.n+1)*.13)})`;btn.style.color=e.n>3?"white":"#17344d";btn.setAttribute("aria-label",`${label(a)}から${label(b)}、${e.n}論文`);btn.onclick=()=>{state.sel=null;state.selEdge=e;renderDetail();};td.append(btn);}else{td.textContent="·";td.title="解析の組合せが未確認、または線の最小論文数未満";}tr.append(td);});tbody.append(tr);});table.append(tbody);scroll.append(table);box.append(scroll);
+  const tbody=el("tbody");domains.forEach(a=>{const tr=el("tr");const th=el("th",null,label(a));th.scope="row";tr.append(th);domains.forEach(b=>{const td=el("td");const e=edges[a+"|"+b];if(e){const btn=el("button",null,String(e.n));btn.style.background=`rgba(35,112,127,${Math.min(.85,.16+Math.log2(e.n+1)*.13)})`;btn.style.color=e.n>3?"white":"#1f5f6e";btn.setAttribute("aria-label",`${label(a)}から${label(b)}、${e.n}論文`);btn.onclick=()=>{state.sel=null;state.selEdge=e;renderDetail();};td.append(btn);}else{td.textContent="·";td.title="解析の組合せが未確認、または線の最小論文数未満";}tr.append(td);});tbody.append(tr);});table.append(tbody);scroll.append(table);box.append(scroll);
 }
 function exportMapSVG() {
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
   if(!sim.nodes.length)return;
   const minX=Math.min(...sim.nodes.map(n=>n.x))-140,maxX=Math.max(...sim.nodes.map(n=>n.x))+140;
   const minY=Math.min(...sim.nodes.map(n=>n.y))-100,maxY=Math.max(...sim.nodes.map(n=>n.y))+100;
-  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY-60} ${maxX-minX} ${maxY-minY+100}" width="1800" role="img"><title>JAxMAPs 概念マップ</title><rect x="${minX}" y="${minY-60}" width="${maxX-minX}" height="${maxY-minY+100}" fill="#f8f7f4"/><g font-family="sans-serif">`;
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY-60} ${maxX-minX} ${maxY-minY+100}" width="1800" role="img"><title>JAxMAPs 概念マップ</title><rect x="${minX}" y="${minY-60}" width="${maxX-minX}" height="${maxY-minY+100}" fill="#ffffff"/><g font-family="sans-serif">`;
   svg+=`<text x="${minX+20}" y="${minY-25}" font-size="22" font-weight="700">JAxMAPs | JACSIS / JASTIS</text>`;
   sim.edges.forEach(e=>{const attr=`fill="none" stroke="${colorOf(e.s)}" stroke-opacity=".35" stroke-width="${Math.min(7,.7+Math.log2(e.n+1)*1.5)}"`;svg+=e.s===e.t?`<circle cx="${e.a.x+14}" cy="${e.a.y-14}" r="13" ${attr}/>`:`<line x1="${e.a.x}" y1="${e.a.y}" x2="${e.b.x}" y2="${e.b.y}" ${attr}/>`;});
-  sim.nodes.forEach(n=>{svg+=`<circle cx="${n.x}" cy="${n.y}" r="${rad(n)}" fill="${colorOf(n.id)}"/><text x="${n.x}" y="${n.y-rad(n)-9}" text-anchor="middle" font-size="13" paint-order="stroke" stroke="#f8f7f4" stroke-width="4" stroke-linejoin="round" fill="#14171c">${esc(label(n.id))} (${n.n})</text>`;});
+  sim.nodes.forEach(n=>{svg+=`<circle cx="${n.x}" cy="${n.y}" r="${rad(n)}" fill="${colorOf(n.id)}"/><text x="${n.x}" y="${n.y-rad(n)-9}" text-anchor="middle" font-size="13" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" fill="#2f3437">${esc(label(n.id))} (${n.n})</text>`;});
   svg+=`<text x="${minX+20}" y="${maxY+10}" font-size="11">円はテーマの全論文、線は登録された解析の論文数。因果を意味しません。調査 ${esc(state.study||"すべて")} / 年 ${esc(state.wave||"すべて")}</text></g></svg>`;
   downloadFile("JAxMAPs-map.svg",svg,"image/svg+xml;charset=utf-8");
 }
