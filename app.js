@@ -41,6 +41,17 @@ const SURVEY_BY_DOMAIN = {};
 const state = { tab: "map", q: "", groups: new Set(), minPapers: 1, verified: false,
                 sel: null, selEdge: null, listSel: null, study: "", wave: "" };
 
+function searchText(value) {
+  return String(value || "").normalize("NFKC").toLowerCase()
+    .replace(/https?:\/\/(?:dx\.)?doi\.org\//g, "").replace(/\bdoi:\s*/g, "")
+    .replace(/[,、]/g, " ");
+}
+function paperSearchText(p) {
+  return searchText([p.title,p.first_author,p.first_author_full,...(p.authors||[]),
+    p.journal,p.journal_abbreviation,...(p.journal_aliases||[]),p.doi,
+    ...(p.search_aliases||[]),...(p.documents||[]),label(p.exposure_domain),
+    label(p.outcome_domain),...(p.tags||[]).map(label)].join(" "));
+}
 function paperMatches(p) {
   if (p.doc_kind !== "paper") return false;
   if (state.verified && !p.waves_verified?.length) return false;
@@ -48,13 +59,40 @@ function paperMatches(p) {
   const waves = p.waves_verified?.length ? p.waves_verified : (p.waves_yes || []);
   if (state.wave && !waves.some(w => String(w).includes(state.wave))) return false;
   if (state.q) {
-    const hay = [p.title,p.first_author,p.journal,p.doi,...(p.documents||[]),label(p.exposure_domain),label(p.outcome_domain),...(p.tags||[]).map(label)].join(" ").normalize("NFKC").toLowerCase();
-    if (!state.q.normalize("NFKC").toLowerCase().split(/\s+/).filter(Boolean).every(t => hay.includes(t))) return false;
+    const hay = paperSearchText(p);
+    if (!searchText(state.q).split(/\s+/).filter(Boolean).every(t => hay.includes(t))) return false;
   }
   return true;
 }
 function filteredPapers() {
   return D.papers.filter(p => paperMatches(p) && (!state.groups.size || state.groups.has(groupOf[p.exposure_domain]) || state.groups.has(groupOf[p.outcome_domain]))).sort((a,b) => (b.year||0)-(a.year||0));
+}
+function searchResults(g = buildGraph()) {
+  const papers = filteredPapers();
+  const mapped = new Set(g.edges.flatMap(e => e.ids));
+  return {papers, mappedCount: papers.filter(p => mapped.has(p.paper_id)).length};
+}
+function openPaperList() {
+  state.tab = "list"; state.listSel = null; state.sel = state.selEdge = null;
+  history.replaceState(null, "", "#list"); refresh(false);
+  document.querySelector('#tabs button[data-tab="list"]')?.focus();
+}
+function renderSearchSummary(g) {
+  let box = $("#paper-search-summary");
+  if (!box) {
+    const stage = $(".content-stage"); if (!stage) return;
+    box = el("section", "academic-notice-banner"); box.id = "paper-search-summary";
+    const text = el("p", "guide-text"); text.setAttribute("role", "status");
+    const button = el("button", "btn-reset", "論文一覧で見る →");
+    button.type = "button"; button.onclick = openPaperList;
+    box.append(text, button); stage.prepend(box);
+  }
+  const active = !!state.q.trim() && ["map", "matrix"].includes(state.tab);
+  box.style.display = active ? "" : "none";
+  if (!active) return;
+  const {papers, mappedCount} = searchResults(g);
+  box.firstChild.textContent = `検索に一致 ${papers.length} 論文（マップ表示 ${mappedCount} 論文）`;
+  box.lastChild.disabled = !papers.length;
 }
 function openSurvey(filters={}) {
   state.tab="survey"; refresh(false); window.JAxSurvey?.open(filters);
@@ -237,7 +275,7 @@ function renderDetail() {
     e.ids.forEach(id => {
       const p = paperById[id]; const c = el("div", "mini");
       c.append(paperTitle(p));
-      c.append(el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
+      c.append(el("div", "m", [p.first_author_full || p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
       const info=el("button","paper-details","調査情報を見る");
       info.onclick=()=>{state.listSel=id;state.sel=state.selEdge=null;renderDetail();};
       c.append(info);
@@ -287,7 +325,7 @@ function renderDetail() {
   const p = state.listSel && paperById[state.listSel];
   if (!p) { d.append(el("p", "muted", "円か線を選ぶと、ここに内訳が出ます。")); return; }
   const heading=el("h3");heading.append(paperTitle(p,"paper-title"));d.append(heading);
-  d.append(el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
+  d.append(el("div", "m", [p.first_author_full || p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
   if (p.doi) { const a = el("a", "doi", "論文を開く ↗"); a.href = paperUrl(p); a.target = "_blank"; a.rel="noopener noreferrer"; d.append(a); }
   const box = el("div", "kvs");
   const kv = (k, v) => { const r = el("div", "kv"); r.append(el("span", "k", k), el("span", "v", String(v))); box.append(r); };
@@ -318,7 +356,7 @@ function renderList() {
     const c = el("article", "card" + (state.listSel === p.paper_id ? " on" : ""));
     const t = paperTitle(p);
     if (p.title_is_filename) t.append(el("span", "warn", "書誌未整備"));
-    c.append(t, el("div", "m", [p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
+    c.append(t, el("div", "m", [p.first_author_full || p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
     const pr = el("div", "pair");
     pr.append(el("span", "dom", label(p.exposure_domain)), el("span", "arrow", "→"), el("span", "dom", label(p.outcome_domain)));
     pr.querySelectorAll(".dom")[0].style.background = colorOf(p.exposure_domain) + "22";
@@ -374,13 +412,9 @@ function renderData() {
   box.append(dt);
   sec("空白の読み方");
   box.append(el("p", "small", D.meta.empty_cell_label));
-  sec("生成元");
-  const t3 = el("div", "kvs");
-  D.meta.generated_from.forEach((f, i) => kv(t3, "入力 " + (i + 1), f));
-  box.append(t3);
 }
 function refresh(relayout) {
-  const g = renderStats(); renderGroups();
+  const g = renderStats(); renderGroups(); renderSearchSummary(g);
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === state.tab));
   document.body.classList.toggle("survey-mode",state.tab==="survey");
   document.querySelector(".control-console").hidden=state.tab==="survey";
@@ -406,6 +440,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const readViewHash=()=>{const [t,params=""]=location.hash.slice(1).split("?");if(["map","matrix","survey","list","data"].includes(t)){state.tab=t;const id=new URLSearchParams(params).get("domain");if(t==="map"&&id&&Object.hasOwn(D.domains,id)){state.sel=id;state.selEdge=null;}}};
   window.addEventListener("hashchange",()=>{readViewHash();refresh(state.tab==="map");});
   readViewHash();
+  $("#q").placeholder = "タイトル・著者名・誌名／略称・DOI・領域";
   $("#q").oninput = e => { state.q = e.target.value; refresh(true); };
   $("#minp").oninput = e => { state.minPapers = +e.target.value; $("#minplabel").textContent = e.target.value; refresh(true); };
   $("#verified").onchange = e => { state.verified = e.target.checked; refresh(true); };
@@ -463,7 +498,7 @@ function downloadFile(name,text,type) {
 }
 function csvCell(v) {const s=String(v??"");return '"'+(/^[=+@-]/.test(s)?"'":"")+s.replace(/"/g,'""')+'"';}
 function exportPapers() {
-  const rows=[["タイトル","著者","誌名","出版年","調査","調査年","主曝露","主アウトカム","確認状態","DOI"],...filteredPapers().map(p=>[p.title,p.first_author,p.journal,p.year,p.study,(p.waves_verified?.length?p.waves_verified:p.waves_yes||[]).join(" / "),label(p.exposure_domain),label(p.outcome_domain),p.verification,p.doi])];
+  const rows=[["タイトル","著者","誌名","出版年","調査","調査年","主曝露","主アウトカム","確認状態","DOI"],...filteredPapers().map(p=>[p.title,p.first_author_full || p.first_author,p.journal,p.year,p.study,(p.waves_verified?.length?p.waves_verified:p.waves_yes||[]).join(" / "),label(p.exposure_domain),label(p.outcome_domain),p.verification,p.doi])];
   downloadFile("JAxMAPs-papers.csv","\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8");
 }
 function renderMatrix() {
