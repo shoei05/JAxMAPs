@@ -1053,3 +1053,6 @@ button.link-row { cursor: pointer; display: flex; flex-direction: column; }
 .guide .guide-body h3 { font-size: 16px; margin: 20px 0 6px; color: var(--accent-deep); border: 0; }
 .guide .guide-body h4 { font-size: 15px; margin: 14px 0 4px; color: var(--text-main); }
 .guide .guide-body h5 { font-size: 14px; margin: 12px 0 4px; color: var(--text-main); }
+
+#foot a.foot-updates { color: inherit; opacity: .75; text-decoration: underline; text-underline-offset: 2px; }
+#foot a.foot-updates:hover { opacity: 1; }

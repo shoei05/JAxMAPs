@@ -20,9 +20,9 @@
   },
   "papers": 299,
   "files": {
-    "index.html": "434eec0144d725d91f6a4ebdf1755b724790545d718ddfc80279d7ff9fa89f0c",
-    "app.js": "065b7c32ca485213f838ee008f1ba05b2f8dfefbe2b07f2658af8700ba4cbebb",
-    "style.css": "7e7de550958df9afbed53749393e3e8441821999720c000f9e10ed00a41ad256",
+    "index.html": "a882bc0097055a3d45751caa7750a5d92f799301410377d313e1cd4a236e1204",
+    "app.js": "bd7d04d79f005dd9cd4bed49f23d2c3a5e72840d08c579aeda3f781cc3d09fe9",
+    "style.css": "2d6b9083298f2079a50ed654db48384064e11f2c47c5fd01b2b27bdf505a0d86",
     "survey.js": "ba3200c44029bae26bc06d8555a80fa83b416d3625c2ec9960182b220996b80f",
     "survey.css": "26ce9c516ba72cd4c824eb61f3c1a1a6a525529d1e0dc25ab26b66798ff9d7b1",
     "data/survey.json": "eeee371ac095769b364e38fd7967f211308f8bd1a9fdc85be9faec3acea93070",
@@ -33,6 +33,7 @@
     "data/scales.json": "37551c1d67fd0df63b841528ae0639dfad30e4ff154521bf640736d7b3e5a486",
     "data/survey_crosswalk.json": "c9a18bb7bbef2df58ce7a77f1729d834660b3e7e4e41a57dcc0465bbc1a919fb",
     "data/schema.json": "6d58e6dcbbcab78aa806718b7f11a50d9c8e8ef6dedc5a16aa2b0cc3aac5ed38",
-    "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5"
+    "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5",
+    "updates.html": "f3f2e313c1ced41f099b913dc392dc5beafb2d7153f491ca2ec411517f755d15"
   }
 }

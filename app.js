@@ -591,6 +591,7 @@ window.addEventListener("DOMContentLoaded", () => {
     sim.tx += (after.x - before.x) * sim.k; sim.ty += (after.y - before.y) * sim.k;
   }, { passive: false });
   $("#foot").textContent = `JACSIS / JASTIS ｜ ${D.meta.n_papers}論文 ｜ 矢印は因果関係を示しません。 ｜ 本研究は JSPS 科研費 JP25H01079（基盤研究(A)「ゲノムや世代間連鎖を考慮した新型タバコ流行とその影響に関する実証研究」）の研究成果の一部です。`;
+  { const u = el("a", "foot-updates", "更新履歴"); u.href = "updates.html"; $("#foot").append(" ｜ ", u); }
   const g = renderStats(); layout(g, false); refresh(false); tick();
 });
 
