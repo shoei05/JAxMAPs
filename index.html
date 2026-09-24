@@ -142,7 +142,7 @@
 <tr><td>論文7</td><td><a href="https://doi.org/10.2188/jea.JE20160206" target="_blank" rel="noopener">タバコ対策と社会経済格差のレビュー</a> <a href="#list?paper=doi:10.2188/jea.je20160206" class="paper-jump" data-paper="doi:10.2188/jea.je20160206">（このサイトで見る）</a></td><td>格差を同一の尺度と時間軸で評価し、JACSIS/JASTIS の研究群を位置づける視点を整理している。</td></tr>
 <tr><td>論文8</td><td><a href="https://doi.org/10.1093/annonc/mdt279" target="_blank" rel="noopener">がんサバイバーの喫煙と二次がんリスク</a> <a href="#list?paper=doi:10.1093/annonc/mdt279" class="paper-jump" data-paper="doi:10.1093/annonc/mdt279">（このサイトで見る）</a></td><td>同じデータでも、参照カテゴリーの置き方によって予防の論文にも臨床の論文にもなることを示している。</td></tr>
 </tbody></table>
-<details class="guide-full"><summary>ガイドの全文を読む</summary><div class="guide-body"><h2>JACSIS/JASTIS研究の取り扱いガイド</h2>
+<details class="guide-full" open><summary>ガイドの全文を読む</summary><div class="guide-body"><h2>JACSIS/JASTIS研究の取り扱いガイド</h2>
 <h3>1. はじめに</h3>
 <p>本ガイドは、JACSIS（Japan COVID-19 and Society Internet Survey）およびJASTIS（Japan Society and New Tobacco Internet Survey）を用いた研究を扱う際に、研究の全体像と主要な方法論を確認するための文書である。</p>
 <p>JACSIS/JASTISの研究で扱われるデータは、インターネット調査を基盤としており、そのまま使うと日本全体の代表性を持たない。そのため、重み付け（ウェイト）による補正が不可欠であり、さらにadjusted rate（調整済み割合）やATE/ATT/ATUといった因果推論の枠組みを理解することが、論文を正しく読み、自分の研究に活用するための前提となる。</p>
@@ -254,32 +254,32 @@
 <h3>6. キー論文をどう読むか</h3>
 <p>本章では、JACSIS/JASTIS研究に入る人が読むべき8本のキー論文について、それぞれがなぜ重要なのか、どこを読むべきかを解説する。</p>
 <h4>6.1 論文1: タバコ値上げと喫煙行動変化</h4>
-<p><strong>Tabuchi T, et al. Tobacco price increase and smoking behaviour changes in various subgroups: a nationwide longitudinal 7-year follow-up study among a middle-aged Japanese population. *Tobacco Control*. 2017.</strong></p>
+<p><strong>Tabuchi T, et al. Tobacco price increase and smoking behaviour changes in various subgroups: a nationwide longitudinal 7-year follow-up study among a middle-aged Japanese population. <em>Tobacco Control</em>. 2017.</strong></p>
 <p>この論文は、中高年者縦断調査（厚生労働省）のデータを用い、2010年のタバコ価格引き上げ（37%の値上げ）が喫煙行動に与えた影響を7年間にわたって追跡した研究である。結果を見るための論文であると同時に、Table 1 や層別表をどう作るかを学ぶ論文でもある。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li><strong>研究デザイン</strong>: 50〜59歳のベースライン（2005年）から2012年まで約30,000人を追跡した縦断研究。離散時間デザイン（discrete-time design）を用い、各調査波を分析単位としている</li><li><strong>GEE（一般化推定方程式）</strong>: 個人内の相関構造を考慮したIPW付きロジスティックGEEを使用。サンドイッチ分散推定量により頑健な標準誤差を得ている</li><li><strong>Table 1 の作り方</strong>: 年齢や性別だけでなく、学歴、所得、職業状態などの社会経済的変数をきちんと並べ、観察している変化がどの社会経済的層に出ているのかを可視化する発想が重要である。JACSIS/JASTISでも、記述表は単なる背景説明ではなく、「どの層に影響している研究なのか」を見せる表として作る方がよい</li><li><strong>主要結果</strong>: 値上げは禁煙オッズを2.14倍（95%CI: 1.90–2.41）に増加させ、再喫煙オッズを0.60倍（95%CI: 0.46–0.77）に低下させた</li><li><strong>社会経済層別解析</strong>: 学歴、所得、職業状態などで層別した結果、値上げの禁煙促進効果はほぼすべてのサブグループで認められた。学歴や所得で効果が大きくは変わらなかった点も重要である</li><li><strong>脱落補正</strong>: IPWにより各波の非回答を補正。重み付けなしでは喫煙率が低く推定される（24.3% vs 19.5%）ことが示されており、喫煙者の方が脱落しやすいことへの対処の重要性が実証されている</li></ul>
 <p>この論文では、GEEの使い方、層別解析の見せ方、IPWによる脱落補正の考え方に加えて、「社会経済的な層を見える形で出してから主解析を読む」という流れを一つの論文の中で確認できる。</p>
 <h4>6.2 論文2: 親の喫煙と子どもの受動喫煙関連疾患</h4>
-<p><strong>Tabuchi T, et al. Are secondhand smoke-related diseases of children associated with parental smoking cessation? Determinants of parental smoking cessation in a population-based cohort study. *Preventive Medicine*. 2015.</strong></p>
+<p><strong>Tabuchi T, et al. Are secondhand smoke-related diseases of children associated with parental smoking cessation? Determinants of parental smoking cessation in a population-based cohort study. <em>Preventive Medicine</em>. 2015.</strong></p>
 <p>この論文は、21世紀出生児縦断調査（厚生労働省、2001年出生コホート）を用い、子どもの受動喫煙関連疾患が親の禁煙を促すかどうかを調べた研究である。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li><strong>人口ベースコホート</strong>: 2001年1月10〜17日および7月10〜17日に生まれたすべての乳児を対象とした出生コホート（ベースライン回答率87.8%、47,015世帯）</li><li><strong>Method（方法）セクションの書き方</strong>: 母親と父親を分けて解析したうえで、各特性による禁煙率の差をカイ二乗検定で確認し、その後に単変量解析と多変量解析を配置している。Methodsの組み立てが素直で、研究計画を文章に落とすときの手本になる</li><li><strong>アウトカム頻度が高い場合への対応</strong>: 禁煙というアウトカム頻度が10%を超えるため、McNutt et al.（2003）や Spiegelman and Hertzmark（2005）の議論に沿って、ORではなくPRを出す目的でlog-binomial regressionを用いている。モデルが収束しない場合には、Zou（2004）などで示されているlog-Poisson regressionに切り替え、推定自体は一貫させつつ、信頼区間はやや広くなることを踏まえて解釈している</li><li><strong>非回答補正の書き方</strong>: 追跡調査の回答者と非回答者の違いをまずTable S1で確認し、そのうえでTable S1に挙げた共変量を使って非回答を説明するロジスティック回帰モデルを作り、IPWを構成して主結果に用いている。complete-case analysis は補足資料の Tables S2、S3 に退避し、共変量と非回答解析の詳細も補足資料に置いている</li><li><strong>主要結果</strong>: 子どもの受動喫煙関連疾患は、多変量調整後には親の禁煙と有意な関連を示さなかった。禁煙の主な決定要因は、1日の喫煙本数の少なさとパートナーの喫煙状態であった</li></ul>
 <p>JACSIS/JASTISそのものの論文ではないが、アウトカム頻度が高いときにどのモデルを選び、その理由をどう書くか、さらに非回答補正をどこまでMethodsと補足資料に残すかを学ぶ参照先として有用である。</p>
 <h4>6.3 論文3c: Go To Travelと重み付き全国推定の実例</h4>
-<p><strong>Miyawaki A, Tabuchi T, et al. Association between participation in the government subsidy programme for domestic travel and symptoms indicative of COVID-19 infection in Japan: cross-sectional study. *BMJ Open*. 2021.</strong></p>
+<p><strong>Miyawaki A, Tabuchi T, et al. Association between participation in the government subsidy programme for domestic travel and symptoms indicative of COVID-19 infection in Japan: cross-sectional study. <em>BMJ Open</em>. 2021.</strong></p>
 <p><strong>ここでの扱い</strong>: この論文の主題はGo To Travelキャンペーンへの参加とCOVID-19様症状の関連であり、重み付け手法そのものの論文ではない。本ガイドでは、JACSISの重み付けを使った全国推定の実例として参照する。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li>JACSISの第1波データ（2020年8〜9月、25,482人）を使用した横断研究</li><li>国民生活基礎調査との比較によるIPWの具体的な適用手順が補足資料に詳述されている</li><li>データの質管理として、不自然な回答パターンを持つ2,518人（1.1%）を除外するアルゴリズムが適用されている</li><li>感度分析として、東京都居住者の除外、非重み付け解析、地域層別解析など多角的な検証が行われている</li><li>重み付けに用いた共変量、層別化の方法、標準化の手順が具体的に記載されており、自分の研究でJACSISの重み付けを適用する際の手本となる</li></ul>
 <p>JACSISで全国推定を行うときに、重み付けを実際の解析にどう組み込むかを具体的に確認するのに向いている。とくにJACSIS/JASTISでは、重み付けの実装に関わる情報が本文より補足資料にまとまっていることが少なくないため、この論文は補足資料まで見てはじめて「どう重みを作り、どう感度分析を置くか」が分かる。</p>
 <p>この論文は本文だけでなく、補足資料まで見た方がよい。重み付けに使った変数、層別化のしかた、感度分析の置き方は補足資料の方が追いやすい。</p>
 <h4>6.4 論文4: 電子タバコ・加熱式タバコの認知と使用</h4>
-<p><strong>Tabuchi T, et al. Awareness and use of electronic cigarettes and heat-not-burn tobacco products in Japan. *Addiction*. 2016.</strong></p>
+<p><strong>Tabuchi T, et al. Awareness and use of electronic cigarettes and heat-not-burn tobacco products in Japan. <em>Addiction</em>. 2016.</strong></p>
 <p><strong>読みどころ:</strong></p>
 <ul><li>2015年のインターネット調査（9,055人）を用い、電子タバコと加熱式タバコの認知率・使用率を推定した、この分野で世界的にも初期の研究</li><li>2010年国民生活基礎調査を参照としたIPW重み付けの方法と、重み付け前後の属性分布の比較が補足資料に詳述されている</li><li>重み付け後の推定値: 認知率48.0%、使用経験率6.60%、直近30日間の使用率1.29%</li><li>フォローアップ調査において、追跡回答者の分布をベースライン分布に近づけるよう重み補正を行うことが明記されている。単純なレスポンスレートだけでなく、「誰が残ったか」を補正して見る発想を確認できる</li></ul>
 <p>横断時点の代表性補正と、フォローアップ時の分布補正という二つの重み付けを一つの流れで確認できる点が、この論文の参照価値である。JACSIS/JASTISでレスポンスレートや追跡時の偏りをどう考えるかを整理したいときは、本文だけで終えず、補足資料にある分布比較まで追った方がよい。</p>
 <p>この論文も補足資料まで確認した方がよい。重み付け前後で分布がどう変わったか、追跡時の分布補正をどう見せているかは補足資料の表が分かりやすい。</p>
 <h4>6.5 論文5: 親の喫煙と子どもの喘息（PAF/PARPの実例）</h4>
-<p><strong>Tabuchi T, et al. Maternal and paternal indoor or outdoor smoking and the risk of asthma in their children: A nationwide prospective birth cohort study. *Drug and Alcohol Dependence*. 2015.</strong></p>
+<p><strong>Tabuchi T, et al. Maternal and paternal indoor or outdoor smoking and the risk of asthma in their children: A nationwide prospective birth cohort study. <em>Drug and Alcohol Dependence</em>. 2015.</strong></p>
 <p>この論文は、21世紀出生児縦断調査を用いた前向き出生コホート研究（prospective birth cohort study）であり、47,015世帯の乳児を最長8年間追跡して、親の喫煙場所（屋内 vs 屋外）と子どもの喘息リスクの関連を調べている。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li><strong>PAF/PARPの具体的な計算方法</strong>: タバコ対策の視点（never-smokerを参照）と臨床的視点（indoor smokerを参照とし、outdoor smokerへの変更の効果を推定）の2つの視点からPARPが計算されている</li><li><strong>タバコ対策の視点での結果</strong>: 両親が屋内喫煙の場合、喘息での入院リスクは1.54倍（0.5〜2.5歳）、1.43倍（2.5〜4.5歳）、1.72倍（4.5〜8歳）。すべての親が禁煙した場合、入院の8.3〜18.2%が防げると推定（PARP）</li><li><strong>臨床的視点での結果</strong>: 屋内喫煙から屋外喫煙に変更した場合の入院リスクの低減は3.7〜0.1%</li><li><strong>絶対数での提示</strong>: PARPを絶対数に換算し、「日本全体で何人の入院が防げるか」を示している。割合だけでは見えにくい影響の大きさを伝えやすい</li></ul>
@@ -287,19 +287,19 @@
 <p>関連の有無だけでなく、「その曝露を減らしたら集団全体でどれだけ健康影響を減らせるか」を示す書き方を学ぶのに役立つ。JACSIS/JASTISでも、導出できるテーマであれば、PAF/PARPは解析の早い段階で一度出してみる前提で考えた方がよい。</p>
 <p>PAF/PARPを自分で使うつもりなら、補足資料まで見ておくとよい。計算の置き方と結果の出し方は本文より補足資料の方が追いやすい。</p>
 <h4>6.6 論文6: 受動喫煙を含めた死亡への影響</h4>
-<p><strong>Takase M, et al. Has the impact of cigarette smoking on mortality been underestimated by overlooking second-hand smoke? Tohoku medical megabank community-based cohort study. *BMJ Public Health*. 2024.</strong></p>
+<p><strong>Takase M, et al. Has the impact of cigarette smoking on mortality been underestimated by overlooking second-hand smoke? Tohoku medical megabank community-based cohort study. <em>BMJ Public Health</em>. 2024.</strong></p>
 <p>この論文は、東北メディカル・メガバンク計画のコミュニティベースコホート（40,796人、中央値6.5年追跡）を用い、能動喫煙に受動喫煙（secondhand smoke; SHS）を加えた場合に、PAFがどれだけ変わるかを検討した研究である。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li><strong>曝露分類</strong>: 能動喫煙（never/ex/current）と受動喫煙（SHS曝露の有無・時間）を組み合わせた10カテゴリーの分類を用いている</li><li><strong>PAFの増加</strong>: 男性では、能動喫煙のみのPAFが28.0%であったのに対し、受動喫煙を加えると31.3%に増加（+3.3ポイント）。女性では、2.3%から8.4%に増加（+6.1ポイント）。特に女性では、非喫煙者の受動喫煙曝露がPAFの大部分を占める</li><li><strong>過小評価の指摘</strong>: 従来の研究は能動喫煙のみでPAFを算出していたが、受動喫煙を含めると死亡への影響の見積もりが変わることを示した</li><li><strong>次の問いにつながる点</strong>: 受動喫煙まで含めて曝露を整理することで、誰にどの介入が必要かをより細かく考えやすくなる。能動喫煙の有無だけでなく、行動と曝露環境を組み合わせて層を切る発想は、precision behavior scienceにも通じる</li></ul>
 <p>能動喫煙だけでは拾えない健康影響を、受動喫煙まで含めて見直す必要が分かる。</p>
 <h4>6.7 論文7: タバコ対策と社会経済格差のレビュー</h4>
-<p><strong>Tabuchi T, et al. Tobacco Control Measures to Reduce Socioeconomic Inequality in Smoking: The Necessity, Time-Course Perspective, and Future Implications. *Journal of Epidemiology*. 2017.</strong></p>
+<p><strong>Tabuchi T, et al. Tobacco Control Measures to Reduce Socioeconomic Inequality in Smoking: The Necessity, Time-Course Perspective, and Future Implications. <em>Journal of Epidemiology</em>. 2017.</strong></p>
 <p>この論文は、タバコ対策研究の全体像を俯瞰するナラティブレビューである。</p>
 <p><strong>読みどころ:</strong></p>
 <ul><li><strong>時間経過の視点（time-course perspective）</strong>: タバコ対策の介入直後には、社会経済的に恵まれた層ほど先に効果を受け取るため、一時的に格差が拡大して見える場合がある。これは「格差のパラドックス（inequality paradox）」または「逆進的格差推移仮説（inverse equity hypothesis）」と呼ばれる。しかし、長期的に介入を継続すれば、不利な層にも効果が浸透し、最終的には格差が縮小する</li><li><strong>Figure 2のモデル</strong>: 介入なしでは格差が拡大し続けるが、介入ありでは早期に一時的拡大が起こった後、長期的に縮小するという時間軸のモデルが示されている</li><li><strong>Equity Effectiveness Loop（Figure 3）</strong>: モニタリング → 評価 → 経済評価 → 知識の翻訳 → 再評価 → 長期政策という循環的な評価モデルが提案されている</li><li><strong>日本の位置づけ</strong>: 2010年時点の日本は「介入の早期段階」にとどまっており、格差縮小には長期的・継続的な対策が不可欠であると指摘されている</li><li><strong>同じ尺度で可視化する重要性</strong>: タバコ対策の効果や格差の動きは、同じ時間軸、同じ層別、同じ尺度で並べてはじめて比較しやすくなる。対策指標と参照指標を別々の見せ方で出すと、格差が広がっているのか、浸透の途中なのかを見誤りやすい</li><li><strong>他分野への応用</strong>: タバコ対策は介入研究の蓄積が多く、格差評価の枠組みも整理されている。このため、アルコールやギャンブルなど他の健康問題を考える際の参照枠にもなる</li></ul>
 <p>この論文は、個別の結果を追うためというより、JACSIS/JASTIS全体をどの問題意識で読み、どのような形で可視化し続けるかを整えるために読む位置づけになる。</p>
 <h4>6.8 論文8: がんサバイバーの喫煙と二次がんリスク</h4>
-<p><strong>Tabuchi T, et al. Tobacco smoking and the risk of subsequent primary cancer among cancer survivors: a retrospective cohort study. *Annals of Oncology*. 2013.</strong></p>
+<p><strong>Tabuchi T, et al. Tobacco smoking and the risk of subsequent primary cancer among cancer survivors: a retrospective cohort study. <em>Annals of Oncology</em>. 2013.</strong></p>
 <p>この論文は、大阪がんセンターの院内がん登録データと大阪府がん登録のリンケージを用い、がんサバイバーにおける喫煙と二次原発がん（subsequent primary cancer; SPC）のリスクを後ろ向きコホート研究（retrospective cohort study）として調べたものである。</p>
 <p><strong>読みどころ ― 公衆衛生の視点と臨床の視点の違い:</strong></p>
 <p>この論文の最大の特徴は、同じデータセットを2つの異なる視点から解析していることである。</p>
