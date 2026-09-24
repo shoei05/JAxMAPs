@@ -206,6 +206,16 @@ function fit() {
   sim.ty = h / 2 - ((Math.max(...ys) + Math.min(...ys)) / 2) * sim.k;
 }
 const rad = n => 5 + Math.sqrt(n.n) * 2.6;
+/* 線は曝露 → アウトカムの向きの矢印にする */
+const edgeWidth = e => Math.min(7, 0.7 + Math.log2(e.n + 1) * 1.5);
+function edgeGeom(e, lw) {
+  const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
+  const head = 6 + lw * 1.6, hw = 3 + lw * 0.9;
+  const x1 = e.a.x + ux * rad(e.a), y1 = e.a.y + uy * rad(e.a);
+  const x2 = e.b.x - ux * (rad(e.b) + 2), y2 = e.b.y - uy * (rad(e.b) + 2);
+  const bx = x2 - ux * head, by = y2 - uy * head;
+  return {x1, y1, x2, y2, bx, by, lx: bx - uy * hw, ly: by + ux * hw, rx: bx + uy * hw, ry: by - ux * hw};
+}
 function draw() {
   const w = cv.clientWidth, h = cv.clientHeight;
   if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = w * dpr; cv.height = h * dpr; }
@@ -215,13 +225,14 @@ function draw() {
   sim.edges.forEach(e => {
     const on = state.sel && (e.s === state.sel || e.t === state.sel);
     const dim = state.sel && !on;
-    ctx.globalAlpha = dim ? 0.07 : 0.45;
-    ctx.strokeStyle = colorOf(e.s);
-    ctx.lineWidth = Math.min(7, 0.7 + Math.log2(e.n + 1) * 1.5);
-    ctx.beginPath();
-    if (e.a === e.b) { ctx.arc(e.a.x + 14, e.a.y - 14, 13, 0, Math.PI * 2); }
-    else { ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); }
-    ctx.stroke();
+    ctx.globalAlpha = dim ? 0.07 : 0.5;
+    ctx.strokeStyle = ctx.fillStyle = colorOf(e.s);
+    const lw = edgeWidth(e);
+    ctx.lineWidth = lw;
+    if (e.a === e.b) { ctx.beginPath(); ctx.arc(e.a.x + 14, e.a.y - 14, 13, 0, Math.PI * 2); ctx.stroke(); return; }
+    const g = edgeGeom(e, lw);
+    ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.bx, g.by); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(g.x2, g.y2); ctx.lineTo(g.lx, g.ly); ctx.lineTo(g.rx, g.ry); ctx.closePath(); ctx.fill();
   });
   ctx.globalAlpha = 1;
   const sorted = [...sim.nodes].sort((a, b) => a.n - b.n);
@@ -485,8 +496,9 @@ function refresh(relayout) {
   const g = renderStats(); syncSelection(g); renderGroups(); renderSearchSummary(g);
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === state.tab));
   document.body.classList.toggle("survey-mode",state.tab==="survey");
-  document.querySelector(".control-console").hidden=state.tab==="survey"||state.tab==="links";
-  ["map", "matrix", "survey", "list", "links", "data"].forEach(t => $("#pane-" + t).style.display = state.tab === t ? "" : "none");
+  document.querySelector(".control-console").hidden=state.tab==="survey"||state.tab==="links"||state.tab==="guide";
+  document.body.classList.toggle("guide-mode",state.tab==="guide");
+  ["map", "matrix", "survey", "list", "links", "data", "guide"].forEach(t => $("#pane-" + t).style.display = state.tab === t ? "" : "none");
   if (state.tab === "map") { if (relayout !== false) layout(g, true); renderUnmappedPapers(g); }
   if (state.tab === "list") renderList();
   if (state.tab === "data") renderData();
@@ -504,7 +516,7 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#paper-wave").onchange=e=>{state.wave=e.target.value;refresh(true);};
   $("#export-svg").onclick=exportMapSVG;
   $("#export-papers").onclick=exportPapers;
-  const readViewHash=()=>{const [t,params=""]=location.hash.slice(1).split("?");if(["map","matrix","survey","list","links","data"].includes(t)){state.tab=t;const pid=new URLSearchParams(params).get("paper");if(t==="links"&&pid&&paperById[pid]){lsim.seed=pid;state.listSel=pid;lsim.nodes=[];}const id=new URLSearchParams(params).get("domain");if(t==="map"&&id&&Object.hasOwn(D.domains,id)){state.sel=id;state.selEdge=null;}}};
+  const readViewHash=()=>{const [t,params=""]=location.hash.slice(1).split("?");if(["map","matrix","survey","list","links","data","guide"].includes(t)){state.tab=t;const pid=new URLSearchParams(params).get("paper");if(t==="links"&&pid&&paperById[pid]){lsim.seed=pid;state.listSel=pid;lsim.nodes=[];}const id=new URLSearchParams(params).get("domain");if(t==="map"&&id&&Object.hasOwn(D.domains,id)){state.sel=id;state.selEdge=null;}}};
   window.addEventListener("hashchange",()=>{readViewHash();refresh(state.tab==="map");});
   readViewHash();
   $("#q").placeholder = "タイトル・著者名・誌名／略称・DOI・領域";
@@ -512,6 +524,8 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#minp").oninput = e => { state.minPapers = +e.target.value; $("#minplabel").textContent = e.target.value; refresh(true); };
   $("#verified").onchange = e => { state.verified = e.target.checked; refresh(true); };
   $("#reset").onclick = () => { state.q = ""; $("#q").value = ""; state.groups.clear(); state.minPapers = 1; $("#minp").value = 1; $("#minplabel").textContent = "1"; state.verified = false; $("#verified").checked = false; state.study=state.wave="";$("#paper-study").value=$("#paper-wave").value="";state.listSel=null;state.sel = state.selEdge = null; refresh(true); };
+  document.querySelectorAll("#guidepane a.tab-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); state.tab = a.dataset.tab; history.replaceState(null, "", "#" + state.tab); refresh(state.tab === "map"); scrollTo(0, 0); });
+  document.querySelectorAll("#guidepane a.paper-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); window.JAxMAPs.openPaper(a.dataset.paper); scrollTo(0, 0); });
   document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; if(state.tab!=="survey")history.replaceState(null,"","#"+state.tab);refresh(state.tab === "map"); });
   $("#zin").onclick = () => { sim.k *= 1.25; };
   $("#zout").onclick = () => { sim.k /= 1.25; };
@@ -554,7 +568,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const after = toWorld(mx, my);
     sim.tx += (after.x - before.x) * sim.k; sim.ty += (after.y - before.y) * sim.k;
   }, { passive: false });
-  $("#foot").textContent = `JACSIS / JASTIS ｜ ${D.meta.n_papers}論文 ｜ 関連の線は因果関係を示しません。`;
+  $("#foot").textContent = `JACSIS / JASTIS ｜ ${D.meta.n_papers}論文 ｜ 矢印は因果関係を示しません。 ｜ 本研究は JSPS 科研費 JP25H01079（基盤研究(A)「ゲノムや世代間連鎖を考慮した新型タバコ流行とその影響に関する実証研究」）の研究成果の一部です。`;
   const g = renderStats(); layout(g, false); refresh(false); tick();
 });
 
@@ -586,7 +600,7 @@ function exportMapSVG() {
   const minY=Math.min(...sim.nodes.map(n=>n.y))-100,maxY=Math.max(...sim.nodes.map(n=>n.y))+100;
   let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY-60} ${maxX-minX} ${maxY-minY+100}" width="1800" role="img"><title>JAxMAPs 概念マップ</title><rect x="${minX}" y="${minY-60}" width="${maxX-minX}" height="${maxY-minY+100}" fill="#ffffff"/><g font-family="sans-serif">`;
   svg+=`<text x="${minX+20}" y="${minY-25}" font-size="22" font-weight="700">JAxMAPs | JACSIS / JASTIS</text>`;
-  sim.edges.forEach(e=>{const attr=`fill="none" stroke="${colorOf(e.s)}" stroke-opacity=".35" stroke-width="${Math.min(7,.7+Math.log2(e.n+1)*1.5)}"`;svg+=e.s===e.t?`<circle cx="${e.a.x+14}" cy="${e.a.y-14}" r="13" ${attr}/>`:`<line x1="${e.a.x}" y1="${e.a.y}" x2="${e.b.x}" y2="${e.b.y}" ${attr}/>`;});
+  sim.edges.forEach(e=>{const lw=edgeWidth(e),c=colorOf(e.s);if(e.s===e.t){svg+=`<circle cx="${e.a.x+14}" cy="${e.a.y-14}" r="13" fill="none" stroke="${c}" stroke-opacity=".45" stroke-width="${lw}"/>`;return;}const g=edgeGeom(e,lw);svg+=`<line x1="${g.x1}" y1="${g.y1}" x2="${g.bx}" y2="${g.by}" stroke="${c}" stroke-opacity=".45" stroke-width="${lw}"/><polygon points="${g.x2},${g.y2} ${g.lx},${g.ly} ${g.rx},${g.ry}" fill="${c}" fill-opacity=".6"/>`;});
   sim.nodes.forEach(n=>{svg+=`<circle cx="${n.x}" cy="${n.y}" r="${rad(n)}" fill="${colorOf(n.id)}"/><text x="${n.x}" y="${n.y-rad(n)-9}" text-anchor="middle" font-size="13" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" fill="#2f3437">${esc(label(n.id))} (${n.n})</text>`;});
   svg+=`<text x="${minX+20}" y="${maxY+10}" font-size="11">円はテーマの全論文、線は登録された解析の論文数。因果を意味しません。調査 ${esc(state.study||"すべて")} / 年 ${esc(state.wave||"すべて")}</text></g></svg>`;
   downloadFile("JAxMAPs-map.svg",svg,"image/svg+xml;charset=utf-8");

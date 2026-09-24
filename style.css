@@ -1010,3 +1010,34 @@ button.link-row { cursor: pointer; display: flex; flex-direction: column; }
 :root[data-theme="dark"] .chip { background: var(--surface); color: color-mix(in srgb, var(--c) 70%, #ffffff); }
 :root[data-theme="dark"] .chip.on { background: var(--c); color: #1a1f23; }
 :root[data-theme="dark"] .stat { background: var(--surface-alt); }
+
+/* 使い方タブ */
+.guide-mode .workspace-grid { display: block; }
+.guide-mode .right-inspector { display: none; }
+#pane-guide { overflow: auto; }
+.guide { max-width: 860px; margin: 0 auto; padding: 24px 20px 48px; line-height: 1.8; }
+.guide h3 { letter-spacing: .06em; color: var(--accent-deep); font-size: 16px; margin: 28px 0 8px; border-bottom: 1px solid var(--border-main); padding-bottom: 4px; }
+.guide h3:first-child { margin-top: 0; }
+.guide dl { margin: 0; }
+.guide dt { font-weight: 700; color: var(--accent-deep); margin-top: 10px; }
+.guide dd { margin: 2px 0 0 1em; }
+.guide ol, .guide ul { padding-left: 1.4em; }
+.guide li { margin: 4px 0; }
+.guide .guide-foot { color: var(--text-muted); font-size: 12px; margin-top: 20px; }
+
+.guide table.howto { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 8px 0 4px; }
+.guide table.howto th, .guide table.howto td { border: 1px solid var(--border-main); padding: 8px 10px; vertical-align: top; text-align: left; }
+.guide table.howto th { background: var(--surface-alt); color: var(--accent-deep); font-weight: 700; white-space: nowrap; }
+.guide table.howto td:nth-child(2) { white-space: nowrap; }
+.guide table.howto a.tab-jump, .guide a.paper-jump { font-weight: 700; color: var(--accent-deep); }
+.guide ol.steps li { margin: 8px 0; }
+.guide details.guide-full { margin-top: 12px; border: 1px solid var(--border-main); padding: 8px 12px; background: var(--surface-alt); }
+.guide details.guide-full summary { cursor: pointer; font-weight: 700; color: var(--accent-deep); }
+.guide .guide-body { margin-top: 10px; }
+.guide .guide-body h2 { font-size: 17px; margin: 22px 0 6px; }
+.guide .guide-body h3 { font-size: 15px; border: 0; margin: 16px 0 4px; }
+.guide .guide-body h4 { font-size: 14px; margin: 12px 0 4px; }
+.guide .guide-body .tbl { overflow-x: auto; }
+.guide .guide-body table { border-collapse: collapse; font-size: 12.5px; }
+.guide .guide-body th, .guide .guide-body td { border: 1px solid var(--border-main); padding: 4px 8px; }
+@media (max-width: 760px) { .guide table.howto td:nth-child(2) { white-space: normal; } }
