@@ -1041,3 +1041,15 @@ button.link-row { cursor: pointer; display: flex; flex-direction: column; }
 .guide .guide-body table { border-collapse: collapse; font-size: 12.5px; }
 .guide .guide-body th, .guide .guide-body td { border: 1px solid var(--border-main); padding: 4px 8px; }
 @media (max-width: 760px) { .guide table.howto td:nth-child(2) { white-space: normal; } }
+
+/* ガイドの代表論文（JACSIS/JASTIS 以外） */
+.badge.guide { background: #fdf3e3; color: #7a4b12; border-color: #e6c48f; }
+.card .guide-why { margin: 6px 0 0; font-size: 12.5px; color: var(--text-muted); }
+:root[data-theme="dark"] .badge.guide { background: #3a2f1e; color: #f2d5a4; border-color: #6b5230; }
+/* ガイド全文: 数式と見出し */
+.guide .guide-body p.formula { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 14px; background: var(--surface); border: 1px solid var(--border-main); padding: 8px 12px; overflow-x: auto; }
+.guide .guide-body sub { font-size: .75em; }
+.guide .guide-body h2 { font-size: 18px; margin: 26px 0 8px; color: var(--accent-deep); border-bottom: 1px solid var(--border-main); padding-bottom: 4px; }
+.guide .guide-body h3 { font-size: 16px; margin: 20px 0 6px; color: var(--accent-deep); border: 0; }
+.guide .guide-body h4 { font-size: 15px; margin: 14px 0 4px; color: var(--text-main); }
+.guide .guide-body h5 { font-size: 14px; margin: 12px 0 4px; color: var(--text-main); }

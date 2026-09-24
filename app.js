@@ -84,8 +84,10 @@ function paperQueryMatches(p, query) {
       initials.length && initials.every(token => /^[a-z]$/.test(token)) && initials[0] === missing[0][0];
   });
 }
+const isListed = p => p.doc_kind === "paper" || p.doc_kind === "guide";
 function paperMatches(p) {
-  if (p.doc_kind !== "paper") return false;
+  if (!isListed(p)) return false;
+  if (p.doc_kind === "guide" && (state.verified || state.study || state.wave)) return false;
   if (state.verified && !p.waves_verified?.length) return false;
   if (state.study && p.study !== "both" && !(p.study || "").toUpperCase().includes(state.study)) return false;
   const waves = p.waves_verified?.length ? p.waves_verified : (p.waves_yes || []);
@@ -137,7 +139,7 @@ window.JAxMAPs = {openSurvey,openDomain, openPaper(id) {document.querySelector("
 
 /* ---------- グラフの組み立て ---------- */
 function buildGraph() {
-  const papers = filteredPapers(), selected = new Set(papers.map(p => p.paper_id));
+  const papers = filteredPapers().filter(p => p.doc_kind === "paper"), selected = new Set(papers.map(p => p.paper_id));
   const membership = new Map();
   papers.forEach(p => paperDomains(p).forEach(domain => {
     if (!membership.has(domain)) membership.set(domain, new Set());
@@ -393,6 +395,15 @@ function renderDetail() {
   if (paperUrl(p)) { const a = el("a", "doi", "論文を開く ↗"); a.href = paperUrl(p); a.target = "_blank"; a.rel="noopener noreferrer"; d.append(a); }
   const box = el("div", "kvs");
   const kv = (k, v) => { const r = el("div", "kv"); r.append(el("span", "k", k), el("span", "v", String(v))); box.append(r); };
+  if (p.doc_kind === "guide") {
+    kv("位置づけ", `ガイドの代表論文 ${p.guide_no}。JACSIS/JASTIS のデータは使っていない`);
+    kv("読む理由", p.guide_why);
+    if (p.cited_by_count != null) kv("被引用数（OpenAlex）", p.cited_by_count);
+    d.append(box);
+    if (p.links?.length && !(state.tab === "links" && lsim.seed === p.paper_id)) { const lb = el("button", "survey-jump", "この論文を起点につながりを見る →"); lb.onclick = () => openLinks(p.paper_id); d.append(lb); }
+    const gb = el("button", "survey-jump", "使い方（ガイドの読み進め方）を見る →"); gb.onclick = () => { state.tab = "guide"; history.replaceState(null, "", "#guide"); refresh(false); scrollTo(0, 0); }; d.append(gb);
+    return;
+  }
   kv("問いの型", D.question_types[p.question_type] || p.question_type);
   kv("テーマ", paperDomains(p).map(label).join("、") || "確認中");
   const pairs = paperAnalysisPairs(p);
@@ -424,6 +435,13 @@ function renderList() {
     const t = paperTitle(p);
     if (p.title_is_filename) t.append(el("span", "warn", "書誌未整備"));
     c.append(t, el("div", "m", [p.first_author_full || p.first_author, p.journal, p.year].filter(Boolean).join(" · ")));
+    if (p.doc_kind === "guide") {
+      const g = el("div", "m2"); g.append(el("span", "badge guide", `ガイドの代表論文 ${p.guide_no}（JACSIS/JASTIS 以外）`)); c.append(g);
+      c.append(el("p", "guide-why", p.guide_why));
+      const info = el("button", "paper-details", "書誌を見る"); info.onclick = () => { state.listSel = p.paper_id; state.sel = null; state.selEdge = null; refresh(); }; c.append(info);
+      if (p.links?.length) { const ln = el("button", "paper-details", "つながりを見る"); ln.onclick = () => openLinks(p.paper_id); c.append(ln); }
+      box.append(c); return;
+    }
     const pr = el("div", "paper-topics");
     paperDomains(p).forEach(domain => {const topic = el("span", "tag", label(domain)); topic.style.background = colorOf(domain) + "22"; pr.append(topic);});
     if (!paperDomains(p).length) pr.append(el("span", "tag", "テーマ確認中"));
@@ -526,6 +544,10 @@ window.addEventListener("DOMContentLoaded", () => {
   $("#reset").onclick = () => { state.q = ""; $("#q").value = ""; state.groups.clear(); state.minPapers = 1; $("#minp").value = 1; $("#minplabel").textContent = "1"; state.verified = false; $("#verified").checked = false; state.study=state.wave="";$("#paper-study").value=$("#paper-wave").value="";state.listSel=null;state.sel = state.selEdge = null; refresh(true); };
   document.querySelectorAll("#guidepane a.tab-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); state.tab = a.dataset.tab; history.replaceState(null, "", "#" + state.tab); refresh(state.tab === "map"); scrollTo(0, 0); });
   document.querySelectorAll("#guidepane a.paper-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); window.JAxMAPs.openPaper(a.dataset.paper); scrollTo(0, 0); });
+  document.querySelectorAll("#guidepane a.tab-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); state.tab = a.dataset.tab; history.replaceState(null, "", "#" + state.tab); refresh(state.tab === "map"); scrollTo(0, 0); });
+  document.querySelectorAll("#guidepane a.paper-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); window.JAxMAPs.openPaper(a.dataset.paper); scrollTo(0, 0); });
+  document.querySelectorAll("#guidepane a.tab-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); state.tab = a.dataset.tab; history.replaceState(null, "", "#" + state.tab); refresh(state.tab === "map"); scrollTo(0, 0); });
+  document.querySelectorAll("#guidepane a.paper-jump").forEach(a => a.onclick = ev => { ev.preventDefault(); window.JAxMAPs.openPaper(a.dataset.paper); scrollTo(0, 0); });
   document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; if(state.tab!=="survey")history.replaceState(null,"","#"+state.tab);refresh(state.tab === "map"); });
   $("#zin").onclick = () => { sim.k *= 1.25; };
   $("#zout").onclick = () => { sim.k /= 1.25; };
@@ -617,7 +639,7 @@ function cssVar(name, fallback) {
 }
 const lsim = { nodes: [], edges: [], byId: {}, tx: 0, ty: 0, k: 1, running: 0, seed: null, hover: null };
 let lcv, lctx;
-const linkPapers = D.papers.filter(p => p.doc_kind === "paper");
+const linkPapers = D.papers.filter(p => isListed(p));
 const PAPER_YEARS = linkPapers.map(p => p.year).filter(Boolean);
 const Y_MIN = Math.min(...PAPER_YEARS), Y_MAX = Math.max(...PAPER_YEARS);
 const ZISSOU1_CONT = ["#3A9AB2","#6FB2C1","#91BAB6","#A5C2A3","#BDC881","#DCCB4E","#E3B710","#E79805","#EC7A05","#EF5703","#F11B00"];
