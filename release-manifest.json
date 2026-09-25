@@ -33,6 +33,7 @@
     "data/scales.json": "37551c1d67fd0df63b841528ae0639dfad30e4ff154521bf640736d7b3e5a486",
     "data/survey_crosswalk.json": "c9a18bb7bbef2df58ce7a77f1729d834660b3e7e4e41a57dcc0465bbc1a919fb",
     "data/schema.json": "6d58e6dcbbcab78aa806718b7f11a50d9c8e8ef6dedc5a16aa2b0cc3aac5ed38",
-    "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5"
+    "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5",
+    "updates.html": "a68e15b4a8518b0c2c8235103c6379c81ecfed98344ec110e40f37d39acb5dcd"
   }
 }
