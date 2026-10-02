@@ -18,9 +18,9 @@
     "rights_restricted_question_count": 35,
     "rights_note": "再配布許諾を確認できないため、質問本文は掲載せず公式調査票を案内しています。"
   },
-  "papers": 296,
+  "papers": 297,
   "files": {
-    "index.html": "e07671d47cca3f959e0c554d0ede97d4760df9f2ad4e33a3804817973e8fdcde",
+    "index.html": "b90302fa295e73d219ba3d9601bfc6c310cc723e0944f9e1bf182c69dacd9064",
     "app.js": "bd7d04d79f005dd9cd4bed49f23d2c3a5e72840d08c579aeda3f781cc3d09fe9",
     "style.css": "2d6b9083298f2079a50ed654db48384064e11f2c47c5fd01b2b27bdf505a0d86",
     "survey.js": "3b1f17fc5f5b2d42c47f530e6f4c3f2d08953960bbc4ef1c3a842cf061502556",
@@ -29,11 +29,11 @@
     "data/survey-data.js": "2406a9f461cef14217da0ae70327b0ae635f5a745761b8940b1998e4def19580",
     "data/questionnaire-texts.json": "6cd85298142a65a877147c85a8b4b99c720bacb0129275b40ef7c4f66897c573",
     "data/questionnaire-texts.js": "194ccf15dcad664beecc9288750b96c4f2cdb695c3ad255c0d9de3044f5666c8",
-    "data/jaxmaps.json": "7cb9d5500c83330a0107db9334b0218b3fa93b4ef1a8d47dd1ee2e7ec2996422",
+    "data/jaxmaps.json": "edc7af25633126015b4277b57fd2a72f483c501248d6e9d410a1958423c6bb9f",
     "data/scales.json": "37551c1d67fd0df63b841528ae0639dfad30e4ff154521bf640736d7b3e5a486",
-    "data/survey_crosswalk.json": "04981c4eeefc9a5c5ddb2b25dcf7e55b552e068b604c739d429fe6060572849b",
+    "data/survey_crosswalk.json": "ce3fd326458d198199509c36e1c44bca1648fb7c74ddc071302521541132cc86",
     "data/schema.json": "6d58e6dcbbcab78aa806718b7f11a50d9c8e8ef6dedc5a16aa2b0cc3aac5ed38",
     "data/gold_waves_verified.json": "e36315a5a154515c7c442689384ec7cacc2c11675fd4008a7ec9200f96acc1e5",
-    "updates.html": "1dca281af578680252d2101e022009ac5fdcc35513ec0998acc34402f85c71a3"
+    "updates.html": "564acf33117914386c999602a7b0326a23644c54a6907a64cf6ecfb5e1eafa5e"
   }
 }
