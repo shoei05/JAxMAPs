@@ -164,12 +164,15 @@ function layout(g, keepPos) {
   const prev = keepPos ? Object.fromEntries(sim.nodes.map(n => [n.id, n])) : {};
   sim.nodes = g.nodes.map((n, i) => {
     const o = prev[n.id];
-    const a = (i / g.nodes.length) * Math.PI * 2;
-    return { ...n, x: o ? o.x : Math.cos(a) * 180, y: o ? o.y : Math.sin(a) * 180, vx: 0, vy: 0, fixed: false };
+    const a = (i / g.nodes.length) * Math.PI * 2, r0 = 60 * Math.sqrt(g.nodes.length);   // 詰めすぎると初回に弾け飛ぶ
+    return { ...n, x: o ? o.x : Math.cos(a) * r0, y: o ? o.y : Math.sin(a) * r0, vx: 0, vy: 0, fixed: false };
   });
   sim.byId = Object.fromEntries(sim.nodes.map(n => [n.id, n]));
   sim.edges = g.edges.map(e => ({ ...e, a: sim.byId[e.s], b: sim.byId[e.t] }));
-  sim.running = 220;
+  if (keepPos) { sim.running = 220; return; }
+  for (let i = 0; i < 300; i++) step();           // 初回は描く前に落ち着かせる
+  sim.nodes.forEach(n => { n.vx = n.vy = 0; });
+  sim.running = 0; fit();
 }
 function step() {
   const N = sim.nodes;
@@ -193,19 +196,26 @@ function step() {
     const fx = (dx / d) * f, fy = (dy / d) * f;
     e.a.vx += fx; e.a.vy += fy; e.b.vx -= fx; e.b.vy -= fy;
   });
-  N.forEach(n => { if (n.fixed) { n.vx = n.vy = 0; return; } n.vx *= 0.82; n.vy *= 0.82; n.x += n.vx; n.y += n.vy; });
+  N.forEach(n => {
+    if (n.fixed) { n.vx = n.vy = 0; return; }
+    n.vx *= 0.82; n.vy *= 0.82;
+    const sp = Math.hypot(n.vx, n.vy); if (sp > 25) { n.vx *= 25 / sp; n.vy *= 25 / sp; }   // 1フレームの移動に上限
+    n.x += n.vx; n.y += n.vy;
+  });
 }
 
 /* ---------- 描画 ---------- */
 let cv, ctx, dpr = window.devicePixelRatio || 1;
-function fit() {
-  if (!sim.nodes.length) return;
+function fit(ease = 1) {   // ease < 1 で目標の倍率・位置へ少しずつ寄せる
+  if (!sim.nodes.length || !cv) return;
   const xs = sim.nodes.map(n => n.x), ys = sim.nodes.map(n => n.y);
   const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w || !h) return;
   const bw = Math.max(1, Math.max(...xs) - Math.min(...xs)), bh = Math.max(1, Math.max(...ys) - Math.min(...ys));
-  sim.k = Math.min(w / (bw + 190), h / (bh + 190), 2.2);
-  sim.tx = w / 2 - ((Math.max(...xs) + Math.min(...xs)) / 2) * sim.k;
-  sim.ty = h / 2 - ((Math.max(...ys) + Math.min(...ys)) / 2) * sim.k;
+  const k = Math.min(w / (bw + 190), h / (bh + 190), 2.2);
+  const tx = w / 2 - ((Math.max(...xs) + Math.min(...xs)) / 2) * k;
+  const ty = h / 2 - ((Math.max(...ys) + Math.min(...ys)) / 2) * k;
+  sim.k += (k - sim.k) * ease; sim.tx += (tx - sim.tx) * ease; sim.ty += (ty - sim.ty) * ease;
 }
 const rad = n => 5 + Math.sqrt(n.n) * 2.6;
 /* 線は曝露 → アウトカムの向きの矢印にする */
@@ -279,7 +289,7 @@ function draw() {
   ctx.restore();
 }
 function tick() {
-  if (state.tab === "map" && sim.running > 0) { step(); sim.running--; if (sim.running % 12 === 0) fit(); }
+  if (state.tab === "map" && sim.running > 0) { step(); sim.running--; fit(0.12); }
   if (state.tab === "map") draw(); requestAnimationFrame(tick);
 }
 const toWorld = (mx, my) => ({ x: (mx - sim.tx) / sim.k, y: (my - sim.ty) / sim.k });
